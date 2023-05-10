@@ -75,7 +75,7 @@
 <body>
 	<button id="back-btn" onclick="window.location.href = '{{ url_for('index') }}';">返回首页</button>
 	<h1>注册</h1>
-	<form>
+	<form method="POST" action="{{ url_for('register') }}">
 		<label for="nickname">昵称:</label>
 		<input type="text" id="nickname" name="nickname" required>
 

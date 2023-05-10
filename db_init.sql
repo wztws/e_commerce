@@ -1,3 +1,4 @@
+drop database e_commerce;
 CREATE DATABASE  IF NOT EXISTS `e_commerce` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `e_commerce`;
 -- MySQL dump 10.13  Distrib 8.0.30, for Win64 (x86_64)
@@ -65,7 +66,7 @@ DROP TABLE IF EXISTS `post`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `post` (
   `Pcreate_time` int NOT NULL,
-  `Uid` int DEFAULT NULL,
+  `Uid` varchar(45) DEFAULT NULL,
   `Ptitle` varchar(45) DEFAULT NULL,
   `release_time` varchar(45) DEFAULT NULL,
   `change_time` varchar(45) DEFAULT NULL,
@@ -97,8 +98,8 @@ DROP TABLE IF EXISTS `private_lettere`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `private_lettere` (
   `set_letter_time` varchar(45) NOT NULL,
-  `Uid` int DEFAULT NULL,
-  `comUid` int DEFAULT NULL,
+  `Uid` varchar(45) DEFAULT NULL,
+  `comUid` varchar(45) DEFAULT NULL,
   `lettercontent` longblob,
   `Audit` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`set_letter_time`),
@@ -127,9 +128,9 @@ DROP TABLE IF EXISTS `trade`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `trade` (
   `order_createtime` int NOT NULL,
-  `Uid` int DEFAULT NULL,
+  `Uid` varchar(45) DEFAULT NULL,
   `Cid` int DEFAULT NULL,
-  `tradeUid` int DEFAULT NULL,
+  `tradeUid` varchar(45) DEFAULT NULL,
   `total_Num` varchar(45) DEFAULT NULL,
   `total_money` varchar(45) DEFAULT NULL,
   `ifpay` varchar(45) DEFAULT NULL,
@@ -160,9 +161,9 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user` (
-  `Uid` int NOT NULL,
-  `Uname` varchar(45) DEFAULT NULL,
-  `Upassword` varchar(45) DEFAULT NULL,
+  `Uid` varchar(45) NOT NULL,
+  `Uname` varchar(45) UNIQUE NOT NULL,
+  `Upassword` varchar(45) NOT NULL,
   `Uemail` varchar(45) DEFAULT NULL,
   `Uaddress` varchar(125) DEFAULT NULL,
   `Uphone` varchar(45) DEFAULT NULL,
