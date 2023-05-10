@@ -101,7 +101,7 @@
 	</style>
 </head>
 <body>
-	<button id="back-btn" onclick="window.location.href = 'index.html';">返回首页</button>
+	<button id="back-btn" onclick="window.location.href = '{{ url_for('index') }}';">返回首页</button>
 	<h1>我的订单</h1>
 	<div id="search-form">
 		<label for="order-number">订单号:</label>

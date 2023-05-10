@@ -7,10 +7,10 @@
   <title>电商平台</title>
   <meta name="description" content="电商平台">
   <meta name="keywords" content="电商平台">
-  <link rel="shortcut icon" href="ht.ico" type="image/x-icon">
-  <link rel="stylesheet" href="./css/base.css">
-  <link rel="stylesheet" href="./css/common.css">
-  <link rel="stylesheet" href="./css/index.css">
+  <link rel="shortcut icon" href="static/ht.ico" type="image/x-icon">
+  <link rel="stylesheet" href="static/css/base.css">
+  <link rel="stylesheet" href="static/css/common.css">
+  <link rel="stylesheet" href="static/css/index.css">
 </head>
 <body>
   <!-- 头部模块-->
@@ -19,8 +19,8 @@
     <div class="xtx-shortcut">
       <div class="container"> 
         <ul class="fr">
-          <li><a href="login.html">登录/注册</a>|</li>
-          <li><a href="order.html">我的订单</a>|</li>
+          <li><a href="{{ url_for('login')}}">登录/注册</a>|</li>
+          <li><a href="{{ url_for('order')}}">我的订单</a>|</li>
           <li><a href="">会员中心</a>|</li>
           <li><a href="">帮助中心</a>|</li>
           <li><a href="">在线客服</a>|</li>
@@ -37,7 +37,7 @@
         </h1>
         <nav class="fl">
           <ul>
-            <li><a href="#">首页</a></li>
+            <li><a href="{{ url_for('index')}}">首页</a></li>
             <li><a href="#">生鲜</a></li>
             <li><a href="#">美食</a></li>
             <li><a href="#">餐厨</a></li>
@@ -64,7 +64,7 @@
       <ul class="banner">
         <li>
           <a href="">
-            <img src="./uploads/banner_1.png" alt="">
+            <img src="static/uploads/banner_1.png" alt="">
           </a>
         </li>
       </ul>
@@ -111,22 +111,22 @@
     <div class="goods-list">
       <ul>
         <li>
-          <img src="./uploads/new_goods_1.jpg" alt="">
+          <img src="static/uploads/new_goods_1.jpg" alt="">
           <h3>吸尘器</h3>
           <p><span>￥</span> 899</p>
         </li>
         <li>
-          <img src="./uploads/new_goods_2.jpg" alt="">
+          <img src="static/uploads/new_goods_2.jpg" alt="">
           <h3>智能环绕空调</h3>
           <p><span>￥</span> 1299</p>
         </li>
         <li>
-          <img src="./uploads/new_goods_3.jpg" alt="">
+          <img src="static/uploads/new_goods_3.jpg" alt="">
           <h3>高等数学同济版</h3>
           <p><span>￥</span> 129</p>
         </li>
         <li>
-          <img src="./uploads/new_goods_4.jpg" alt="">
+          <img src="static/uploads/new_goods_4.jpg" alt="">
           <h3>罗西尼机械智能手表</h3>
           <p><span>￥</span> 3399</p>
         </li>
