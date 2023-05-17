@@ -1,0 +1,221 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/message.css') }}">
+        <script src="{{ url_for('static', filename='js/message.js') }}"></script>
+            
+        </script>
+        <body>
+            <div class="back"><input type="button" value="退出"  id="back"></div>
+ 
+            <div class="talk" >
+                <div class="title" id="title">
+                    私信商家
+                    
+                </div>
+                
+                <div class="talk_con" id="talk_con">
+                    <div class="talk_show" id="words" style="overflow: scroll;">
+                        
+                        <!--<div class="atalk" ><span class="asay" id="talk1" id="asay">12-01 09:53:53 王者说：以后请多关照</span></div>
+                        <div class="atalk" ><span class="asay" id="talk2" id="asay" >12-01 09:35:06 王者说：大家好</span></div>
+                        -->
+                        <div class="atalk" ><span class="asay" id="talk3" id="asay">12-01 09:53:53</span></div>
+                        
+                    </div>
+                    
+                    <div id="image_list" style="display:none">
+                        <img src="../static/image/1.gif" alt="" class="image_con">
+                        <img src="../static/image/2.gif" alt="" class="image_con">
+                        <img src="../static/image/3.gif" alt="" class="image_con">
+                        <img src="../static/image/4.gif" alt="" class="image_con">
+                        <img src="../static/image/5.gif" alt="" class="image_con">
+                        <img src="../static/image/6.gif" alt="" class="image_con">
+                        <img src="../static/image/7.gif" alt="" class="image_con">
+                        <img src="../static/image/8.gif" alt="" class="image_con">
+                        <img src="../static/image/9.gif" alt="" class="image_con">
+                        <img src="../static/image/10.gif" alt="" class="image_con">
+                        <img src="../static/image/11.gif" alt="" class="image_con">
+                        <img src="../static/image/12.gif" alt="" class="image_con">
+                        <img src="../static/image/13.gif" alt="" class="image_con">
+                        <img src="../static/image/14.gif" alt="" class="image_con">
+                        <img src="../static/image/15.gif" alt="" class="image_con">
+                        <img src="../static/image/16.gif" alt="" class="image_con">
+                        <img src="../static/image/17.gif" alt="" class="image_con">
+                        <img src="../static/image/18.gif" alt="" class="image_con">
+                        <img src="../static/image/19.gif" alt="" class="image_con">
+                        <img src="../static/image/20.gif" alt="" class="image_con">
+                        <img src="../static/image/21.gif" alt="" class="image_con">
+                        <img src="../static/image/22.gif" alt="" class="image_con">
+                        <img src="../static/image/23.gif" alt="" class="image_con">
+                        <img src="../static/image/24.gif" alt="" class="image_con">
+                        <img src="../static/image/25.gif" alt="" class="image_con">
+                        <img src="../static/image/26.gif" alt="" class="image_con">
+                        <img src="../static/image/27.gif" alt="" class="image_con">
+                        <img src="../static/image/28.gif" alt="" class="image_con">
+                        <img src="../static/image/29.gif" alt="" class="image_con">
+                        <img src="../static/image/30.gif" alt="" class="image_con">
+                        <img src="../static/image/31.gif" alt="" class="image_con">
+                        <img src="../static/image/32.gif" alt="" class="image_con">
+                        <img src="../static/image/33.gif" alt="" class="image_con">
+                        <img src="../static/image/34.gif" alt="" class="image_con">
+                        <img src="../static/image/35.gif" alt="" class="image_con">
+                        <img src="../static/image/36.gif" alt="" class="image_con">
+                        <img src="../static/image/37.gif" alt="" class="image_con">
+                        <img src="../static/image/38.gif" alt="" class="image_con">
+                        <img src="../static/image/39.gif" alt="" class="image_con">
+                        <img src="../static/image/40.gif" alt="" class="image_con">
+                        <img src="../static/image/41.gif" alt="" class="image_con">
+                        <img src="../static/image/42.gif" alt="" class="image_con">
+                        <img src="../static/image/43.gif" alt="" class="image_con">
+                        <img src="../static/image/44.gif" alt="" class="image_con">
+                        <img src="../static/image/45.gif" alt="" class="image_con">
+                        <img src="../static/image/46.gif" alt="" class="image_con">
+                        <img src="../static/image/47.gif" alt="" class="image_con">
+                        <img src="../static/image/48.gif" alt="" class="image_con">
+                        <img src="../static/image/49.gif" alt="" class="image_con">
+                        <img src="../static/image/50.gif" alt="" class="image_con">
+                        <img src="../static/image/51.gif" alt="" class="image_con">
+                        <img src="../static/image/52.gif" alt="" class="image_con">
+                        <img src="../static/image/53.gif" alt="" class="image_con">
+                        <img src="../static/image/54.gif" alt="" class="image_con">
+                        <img src="../static/image/55.gif" alt="" class="image_con">
+                        <img src="../static/image/56.gif" alt="" class="image_con">
+                        <img src="../static/image/57.gif" alt="" class="image_con">
+                        <img src="../static/image/58.gif" alt="" class="image_con">
+                        <img src="../static/image/59.gif" alt="" class="image_con">
+                        <img src="../static/image/60.gif" alt="" class="image_con">
+                        <img src="../static/image/61.gif" alt="" class="image_con">
+                        <img src="../static/image/62.gif" alt="" class="image_con">
+                        <img src="../static/image/63.gif" alt="" class="image_con">
+                        <img src="../static/image/64.gif" alt="" class="image_con">
+                        <img src="../static/image/65.gif" alt="" class="image_con">
+                        <img src="../static/image/66.gif" alt="" class="image_con">
+                        <img src="../static/image/67.gif" alt="" class="image_con">
+                        <img src="../static/image/68.gif" alt="" class="image_con">
+                        <img src="../static/image/69.gif" alt="" class="image_con">
+                        <img src="../static/image/70.gif" alt="" class="image_con">
+                        <img src="../static/image/71.gif" alt="" class="image_con">
+                        <img src="../static/image/72.gif" alt="" class="image_con">
+                        <img src="../static/image/73.gif" alt="" class="image_con">
+                        <img src="../static/image/74.gif" alt="" class="image_con">
+                        <img src="../static/image/75.gif" alt="" class="image_con">
+                        <img src="../static/image/76.gif" alt="" class="image_con">
+                        <img src="../static/image/77.gif" alt="" class="image_con">
+                        <img src="../static/image/78.gif" alt="" class="image_con">
+                        <img src="../static/image/79.gif" alt="" class="image_con">
+                        <img src="../static/image/80.gif" alt="" class="image_con">
+                        <img src="../static/image/81.gif" alt="" class="image_con">
+                        <img src="../static/image/82.gif" alt="" class="image_con">
+                        <img src="../static/image/83.gif" alt="" class="image_con">
+                        <img src="../static/image/84.gif" alt="" class="image_con">
+                        <img src="../static/image/85.gif" alt="" class="image_con">
+                        <img src="../static/image/86.gif" alt="" class="image_con">
+                        <img src="../static/image/87.gif" alt="" class="image_con">
+                        <img src="../static/image/88.gif" alt="" class="image_con">
+                        <img src="../static/image/89.gif" alt="" class="image_con">
+                        <img src="../static/image/90.gif" alt="" class="image_con">
+                        <img src="../static/image/91.gif" alt="" class="image_con">
+                        <img src="../static/image/92.gif" alt="" class="image_con">
+                        <img src="../static/image/93.gif" alt="" class="image_con">
+                        <img src="../static/image/94.gif" alt="" class="image_con">
+                        <img src="../static/image/95.gif" alt="" class="image_con">
+                        <img src="../static/image/96.gif" alt="" class="image_con">
+                        <img src="../static/image/97.gif" alt="" class="image_con">
+                        <img src="../static/image/98.gif" alt="" class="image_con">
+                        <img src="../static/image/99.gif" alt="" class="image_con">
+                        <img src="../static/image/100.gif" alt="" class="image_con">
+                        <img src="../static/image/101.gif" alt="" class="image_con">
+                        <img src="../static/image/102.gif" alt="" class="image_con">
+                        <img src="../static/image/103.gif" alt="" class="image_con">
+                        <img src="../static/image/104.gif" alt="" class="image_con">
+                        <img src="../static/image/105.gif" alt="" class="image_con">
+                        <img src="../static/image/106.gif" alt="" class="image_con">
+                        <img src="../static/image/107.gif" alt="" class="image_con">
+                        <img src="../static/image/108.gif" alt="" class="image_con">
+                        <img src="../static/image/109.gif" alt="" class="image_con">
+                        <img src="../static/image/110.gif" alt="" class="image_con">
+                        <img src="../static/image/111.gif" alt="" class="image_con">
+                        <img src="../static/image/112.gif" alt="" class="image_con">
+                        <img src="../static/image/113.gif" alt="" class="image_con">
+                        <img src="../static/image/114.gif" alt="" class="image_con">
+                        <img src="../static/image/115.gif" alt="" class="image_con">
+                        <img src="../static/image/116.gif" alt="" class="image_con">
+                        <img src="../static/image/117.gif" alt="" class="image_con">
+                        <img src="../static/image/118.gif" alt="" class="image_con">
+                        <img src="../static/image/119.gif" alt="" class="image_con">
+                        <img src="../static/image/120.gif" alt="" class="image_con">
+                        <img src="../static/image/121.gif" alt="" class="image_con">
+                        <img src="../static/image/122.gif" alt="" class="image_con">
+                        <img src="../static/image/123.gif" alt="" class="image_con">
+                        <img src="../static/image/124.gif" alt="" class="image_con">
+                        <img src="../static/image/125.gif" alt="" class="image_con">
+                        <img src="../static/image/126.gif" alt="" class="image_con">
+                        <img src="../static/image/127.gif" alt="" class="image_con">
+                        <img src="../static/image/128.gif" alt="" class="image_con">
+                        <img src="../static/image/129.gif" alt="" class="image_con">
+                        <img src="../static/image/130.gif" alt="" class="image_con">
+                        <img src="../static/image/131.gif" alt="" class="image_con">
+                        <img src="../static/image/132.gif" alt="" class="image_con">
+              
+                    </div>
+                    <div class="talk_input">
+                        <input type="text" class="talk_word" id="talkwords">
+                        <input type="button" value="发送信息" class="talk_sub" id="talksub">
+                        <div id="image_icon">
+                            
+                            <button class="talk_sub" id="talksub_img">发送表情</button>
+                        </div>
+                      
+                   
+                            <select class="talk_sub" id="talksub_color" style="width: 100px;">
+                                <option value="">选择文字颜色</option>
+ 
+                                <option value="white">白色</option>
+                                
+                                <option value="red">红色</option>
+                                
+                                <option value="yellow">黄色</option>
+                                
+                                <option value="blue">蓝色</option>
+                                
+                            </select>
+ 
+                
+                        
+                        <select class="talk_sub" id="talksub_bgcolor" style="width: 100px;">
+                            <option value="">选择背景颜色</option>
+ 
+                            <option value="white">白色</option>
+                            
+                            <option value="red">红色</option>
+                            
+                            <option value="yellow">黄色</option>
+                            
+                            <option value="blue">蓝色</option>
+                            
+                        </select>
+ 
+                        <!-- <input type="button" value="文字颜色" class="talk_sub" id="talksub_color">
+                        <input type="button" value="背景颜色" class="talk_sub" id="talksub_bgcolor"> -->
+                    </div>
+                </div>
+                <div class="user_list">
+                    <div class="user_list_title">用户列表</div>
+                    <div class="user">
+                        <ul>
+                            <li>admin</li>
+                            <li>hello</li>
+                            <li id="user">王者</li>
+ 
+                        </ul>
+                    </div>
+                </div>
+                
+                
+ 
+            </div>
+           
+        </body>
+    </head>
+</html>

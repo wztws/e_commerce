@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>同济大排-济商城</title>
+    <title>SWJTU商城</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/product.css') }}">
     <script src="{{ url_for('static', filename='js/ajax.js') }}"></script>
@@ -13,7 +13,6 @@
 
 <body>
     <div class="app">
-        @include('header.html')
         <div class="product-name">
             <div class="product-nav">
                 <div class="container">
@@ -73,6 +72,10 @@
                         <div class="detail-addcart"><a href="javascript:void(0);" onclick="addcart()">加入购物车</a></div>
                         <div class="detail-buynow">
                             <a href="javascript:void(0);" onclick="buy()">立即购买</a></div>
+                        <div class="detail-message">
+                            <a href="{{ url_for('message') }}" onclick="message()">私信商家</a></div>
+                        <div class="detail-eval">
+                            <a href="javascript:void(0);" onclick="eval()">评价商品</a></div>
                     </div>
                 </div>
             </div>

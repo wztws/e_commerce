@@ -8,9 +8,9 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = 'w522328z'  # 设置session加密的密钥
+app.config['SECRET_KEY'] = '123456'  # 设置session加密的密钥
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=2)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:w522328z@localhost:3306/webhw'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@localhost:3306/webhw'
 
 db = SQLAlchemy(app)
 
@@ -172,6 +172,11 @@ def login():
 @app.route('/register')
 def register():
     return render_template('register.html')
+
+
+@app.route('/message')
+def message():
+    return render_template('message.html')
 
 
 @app.route('/api/login', methods=["POST"])

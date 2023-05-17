@@ -1,5 +1,6 @@
 body {
-  font: 14px/1.5 Helvetica Neue, Helvetica, Arial, Microsoft Yahei, Hiragino Sans GB, Heiti SC, WenQuanYi Micro Hei, sans-serif;
+  font: 14px/1.5 Helvetica Neue, Helvetica, Arial, Microsoft Yahei,
+ Hiragino Sans GB, Heiti SC, WenQuanYi Micro Hei, sans-serif;
   color: #333;
   background-color: #fff;
   min-width: 1226px;
@@ -205,11 +206,46 @@ body {
   text-align: center;
 }
 
+.detail-right .detail-message {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.detail-right .detail-message a {
+  display: inline-block;
+  border: 1px solid #b0b0b0;
+  border-color: #ff6700;
+  background: #fff;
+  color: #ff6700;
+  width: 298px;
+  height: 52px;
+  line-height: 52px;
+  font-size: 16px;
+  text-align: center;
+}
+
 .detail-right .detail-buynow {
   display: inline-block;
 }
 
 .detail-right .detail-buynow a {
+  display: inline-block;
+  border: 1px solid #b0b0b0;
+  border-color: #ff6700;
+  background: #fff;
+  color: #ff6700;
+  width: 140px;
+  height: 52px;
+  line-height: 52px;
+  font-size: 16px;
+  text-align: center;
+}
+
+.detail-right .detail-eval {
+  display: inline-block;
+}
+
+.detail-right .detail-eval a {
   display: inline-block;
   border: 1px solid #b0b0b0;
   border-color: #ff6700;
