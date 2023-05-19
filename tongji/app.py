@@ -8,9 +8,9 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = '123456'  # 设置session加密的密钥
+app.config['SECRET_KEY'] = 'w522328z'  # 设置session加密的密钥
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=2)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@localhost:3306/webhw'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:w522328z@localhost:3306/webhw'
 
 db = SQLAlchemy(app)
 
@@ -83,7 +83,6 @@ class OrderItem(db.Model):
 with app.app_context():
     db.create_all()
 
-
 @app.route('/')
 def index():
     user = {}
@@ -115,6 +114,17 @@ def index():
                            list2=list2,
                            headerlist=headerlist)
 
+@app.route('/addcart', methods=['POST'])
+def add_cart():
+    if 'iduser' not in session:
+        return jsonify({'status': 'error', 'message': '请先登录'})
+    itemid = request.form.get('itemid')
+    count = request.form.get('count')
+    cart = Cart(iduser=session['iduser'], iditem=itemid, count=count)
+    db.session.add(cart)
+    db.session.commit()
+    return jsonify({'status': 'ok', 'message': '添加成功'})
+
 
 @app.route('/product')
 @app.route('/product/<int:_id>')
@@ -123,13 +133,14 @@ def product(_id=0):
     if 'iduser' in session:
         user = User.query.get(session['iduser']).header()
     item = Item.query.filter(Item.iditem == _id).first()
+    img = Image.query.filter(Image.idimage == _id).first()
     product = {}
     product['name'] = item.name
     product['desc'] = item.desc
     product['price'] = item.price
     product['slides'] = [{'url': item.image}]
     product['images'] = [{'url': item.image}, {'url': item.image}, {'url': item.image}]
-
+    #product['images'] = [{'url': img.url}, {'url': img.url}, {'url': img.url}]
 
     headerlist = [[Item.query.offset(random.randint(0, 13)).limit(random.randint(3, 6)).all()
                    for col in range(random.randint(2, 4))] for i in range(7)]
@@ -138,7 +149,6 @@ def product(_id=0):
                            user=user,
                            product=product,
                            headerlist=headerlist)
-
 
 @app.route('/cart')
 def cart():
