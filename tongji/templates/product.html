@@ -70,32 +70,8 @@
                     </div>
                     <div class="detail-button">
                         <div class="detail-addcart"><a href="javascript:void(0);" onclick="addcart()">加入购物车</a>
-                            <script>
-                               /* function analy() {
-                                    fetch('/addcart')
-                                }*/
-                                function addCart(itemid, count) {
-                                    $.ajax({
-                                        type: 'POST',
-                                        url: '/addcart',
-                                        data: {
-                                        itemid: itemid,
-                                        count: count
-                                        },
-                                        success: function(response) {
-                                        if (response.status == 'ok') {
-                                            alert(response.message);
-                                        }
-                                        else {
-                                            alert(response.message);
-                                        }
-                                        },
-                                        error: function() {
-                                        alert('请求失败');
-                                        }
-                                    });
-                                }
-                            </script>
+                           
+                            
                         </div>
                         <div class="detail-buynow">
                             <a href="javascript:void(0);" onclick="buy()">立即购买</a>

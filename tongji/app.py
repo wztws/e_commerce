@@ -2,19 +2,13 @@ import os
 import json
 import random
 from datetime import datetime, timedelta
-
 from flask import Flask, request, render_template, session, redirect, url_for, make_response, jsonify
 from flask_sqlalchemy import SQLAlchemy
-
 app = Flask(__name__)
-
 app.config['SECRET_KEY'] = 'w522328z'  # 设置session加密的密钥
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=2)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:w522328z@localhost:3306/webhw'
-
 db = SQLAlchemy(app)
-
-
 class User(db.Model):
     __tablename__ = 'user'
     iduser = db.Column(db.Integer, primary_key=True)
@@ -30,18 +24,14 @@ class User(db.Model):
         cartcount = Cart.query.filter(Cart.iduser == self.iduser).count()
         header['cartcount'] = cartcount
         return header
-
-
 class Item(db.Model):
     __tablename__ = 'item'
     iditem = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(45), nullable=True)
-
     price = db.Column(db.DECIMAL(5), nullable=True)
     image = db.Column(db.Text)
     desc = db.Column(db.String(45), nullable=True)
     time = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
-
 class Order(db.Model):
     __tablename__ = 'order'
     idorder = db.Column(db.Integer, primary_key=True)
@@ -49,8 +39,6 @@ class Order(db.Model):
     iditem = db.Column(db.Integer, db.ForeignKey('item.iditem'))
     item = db.relationship('Item', backref='orders')
     user = db.relationship('User', backref='orders')
-
-
 class Cart(db.Model):
     __tablename__ = 'cart'
     idorder = db.Column(db.Integer, primary_key=True)
@@ -59,16 +47,12 @@ class Cart(db.Model):
     count = db.Column(db.DECIMAL(2), nullable=True)
     item = db.relationship('Item', backref='carts')
     user = db.relationship('User', backref='carts')
-
-
 class Image(db.Model):
     __tablename__ = 'image'
     idimage = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String(255), nullable=True)
     iditem = db.Column(db.Integer, db.ForeignKey('item.iditem'))
     item = db.relationship('Item', backref='images')
-
-
 class OrderItem(db.Model):
     '''订单项'''
     __tablename__ = "order_item"
@@ -113,19 +97,6 @@ def index():
                            list1=list1,
                            list2=list2,
                            headerlist=headerlist)
-
-@app.route('/addcart', methods=['POST'])
-def add_cart():
-    if 'iduser' not in session:
-        return jsonify({'status': 'error', 'message': '请先登录'})
-    itemid = request.form.get('itemid')
-    count = request.form.get('count')
-    cart = Cart(iduser=session['iduser'], iditem=itemid, count=count)
-    db.session.add(cart)
-    db.session.commit()
-    return jsonify({'status': 'ok', 'message': '添加成功'})
-
-
 @app.route('/product')
 @app.route('/product/<int:_id>')
 def product(_id=0):
@@ -225,16 +196,6 @@ def api_register():
         return jsonify({'status': 'ok', 'location': url_for('index')})
 
 
-@app.route('/api/addcart', methods=["POST"])
-def api_addcart():
-    if 'iduser' not in session:
-        return jsonify({'status': 'error', 'location': url_for('login')}), 400
-    itemid = request.form.get('itemid')
-    count = request.form.get('count')
-    cart = Cart(iduser=session['iduser'], itemid=itemid, count=count)
-    db.session.add(cart)
-    db.session.commit()
-    return jsonify({'status': 'ok'})
 
 
 @app.route('/api/cart')
