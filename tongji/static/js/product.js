@@ -53,6 +53,9 @@ function buy() {
     })
 }
 
+
+
+/*
 function addcart() {
     ajax({
         type: "POST",
@@ -68,7 +71,7 @@ function addcart() {
             window.location.href = err.location;
         }
     })
-}
+}*/
 
 function updatecart() {
     ajax({

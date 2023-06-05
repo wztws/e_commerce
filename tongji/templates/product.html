@@ -69,8 +69,25 @@
                         <div class="total-price">总计：{{product.price}}元</div>
                     </div>
                     <div class="detail-button">
-                        <div class="detail-addcart"><a href="javascript:void(0);" onclick="addcart()">加入购物车</a>
-                           
+                        <div class="detail-addcart"><a href="javascript:void(0);" onclick="addcart({{ product.iditem }}, 1)">加入购物车</a></div>
+                        <script>
+                            function addcart() {
+                                ajax({
+                                    type: "POST",
+                                    url: "/api/addcart",
+                                    data: {
+                                        itemid: window.location.href.split('/').pop(),
+                                        count: 1
+                                    },
+                                    success(res) {
+                                        window.location.reload();
+                                    },
+                                    fail(err) {
+                                        window.location.href = err.location;
+                                    }
+                                })
+                            }
+                        </script>
                             
                         </div>
                         <div class="detail-buynow">
@@ -96,8 +113,6 @@
             </div>
             {% endfor %}
         </div>
-
-        @@include('footer.html')
     </div>
 </body>
 

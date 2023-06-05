@@ -30,6 +30,10 @@ class Item(db.Model):
     name = db.Column(db.String(45), nullable=True)
     price = db.Column(db.DECIMAL(5), nullable=True)
     image = db.Column(db.Text)
+    image2 = db.Column(db.Text)
+    image3 = db.Column(db.Text)
+    image4 = db.Column(db.Text)
+    species = db.Column(db.Integer)
     desc = db.Column(db.String(45), nullable=True)
     time = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 class Order(db.Model):
@@ -110,7 +114,7 @@ def product(_id=0):
     product['desc'] = item.desc
     product['price'] = item.price
     product['slides'] = [{'url': item.image}]
-    product['images'] = [{'url': item.image}, {'url': item.image}, {'url': item.image}]
+    product['images'] = [{'url': item.image2}, {'url': item.image3}, {'url': item.image4}]
     #product['images'] = [{'url': img.url}, {'url': img.url}, {'url': img.url}]
 
     headerlist = [[Item.query.offset(random.randint(0, 13)).limit(random.randint(3, 6)).all()
@@ -121,18 +125,17 @@ def product(_id=0):
                            product=product,
                            headerlist=headerlist)
 
+
 @app.route('/cart')
 def cart():
     if 'iduser' not in session:
         return redirect(url_for('login', src=request.url))
-    user = User.query.get(session['iduser']).header()
-    dbuser = User.query.get(session['iduser'])
     carts = Cart.query.filter(User.iduser == session['iduser']).all()
-    return render_template('cart.html',
-                           user=user,
-                           carts=carts)
-
-
+    user = User.query.get(session['iduser']).header()
+    total_price = 0
+    for cart in carts:
+        total_price += cart.item.price * cart.count
+    return render_template('cart.html', carts=carts,user=user, total_price=total_price)
 @app.route('/order')
 def order():
     if 'iduser' not in session:
@@ -195,16 +198,20 @@ def api_register():
         db.session.commit()
         return jsonify({'status': 'ok', 'location': url_for('index')})
 
-
-
-
-@app.route('/api/cart')
-def api_cart():
-    if 'iduser' not in session:
-        return jsonify({'status': 'error'}), 400
-    cart = Cart.query.filter(User.iduser == session['iduser']).all()
-    return jsonify({'status': 'ok', 'data': cart})
-
+@app.route('/api/addcart', methods=['POST'])
+def api_addcart():
+    itemid = request.form.get('itemid')
+    count = request.form.get('count')
+    item = Item.query.get(itemid)
+    user = User.query.get(session['iduser'])
+    cart = Cart(
+        iduser=user.iduser,
+        iditem=itemid,
+        count=count
+    )
+    db.session.add(cart)
+    db.session.commit()
+    return jsonify({'status': 'ok'})
 
 @app.errorhandler(404)
 def not_foundPage(error):

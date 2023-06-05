@@ -86,25 +86,25 @@
                         {% for cart in carts %}
                         <div class="cart-item-warp">
                             <div class="cart-item clearfix">
-                                <div class="col col-check"><input class="check-box" type="checkbox"
+                                <div class="col col-check"><input class="check-box" type="checkbox" 
                                         onchange="recheck(event)"></div>
-                                <div class="col col-img"><img
+                                <div class="col col-img"><img 
                                         src="{{ url_for('static', filename='image/'+cart.item.image) }}" height="80"
                                         width="80"></div>
                                 <div class="col col-name">
-                                    <h3 class="name">{{cart.item.name}}</h3>
+                                    <h3 class="name">{{cart.item.name}}</h3> 
                                 </div>
                                 <div class="col col-price"><span>{{cart.item.price}}</span>元</div>
                                 <div class="col col-num">
                                     <div class="num-box">
                                         <a class="minus" href="javascript:void(0);" onclick="minus(event)">-</a>
-                                        <input class="num" value="{{cart.count}}"
-                                            onchange="calc(event.target.parentNode.parentNode.parentNode)"></input>
+                                        <input class="num" value="{{cart.count}}"  
+                                                onchange="calc(event.target.parentNode.parentNode.parentNode)"></input>
                                         <a class="plus" href="javascript:void(0);" onclick="plus(event)">+</a>
                                     </div>
                                 </div>
                                 <div class="col col-total"><span></span>元</div>
-                                <div class="col col-action"><a href="javascript:void(0);" onclick="del(event)">×</a>
+                                <div class="col col-action"><a href="javascript:void(0);" onclick="del(event)">×</a> 
                                 </div>
                             </div>
                         </div>
