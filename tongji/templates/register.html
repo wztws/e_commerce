@@ -27,8 +27,18 @@
                     <input id="email" class="input" type="email" name="email" placeholder="请输入邮箱">
                     <h4 class="title-normal">密码</h4>
                     <input id="password" class="input" type="password" name="password" placeholder="请输入密码">
-                    <h4 class="title-normal">确认密码</h4>
+                    <h4 class="title-normal">确认密码</h4>                   
                     <input id="password1" class="input" type="password" name="password" placeholder="请再次输入密码">
+                    <div class="checkboxes">
+                      <h4 class="title-normal">顾客</h4>
+                      <label>
+                        <input type="checkbox" name="checkbox1" value="checkbox1" onclick="handleCheckboxClick(event)">
+                      </label>
+                      <h4 class="title-normal">商家</h4>
+                      <label>
+                        <input type="checkbox" name="checkbox2" value="checkbox2" onclick="handleCheckboxClick(event)">
+                      </label>
+                    </div>
                     <div id="error" class="dis_box"><span></span></div>
                     <input class="button" type="button" onclick="register(event)" value="立即注册">
                 </div>

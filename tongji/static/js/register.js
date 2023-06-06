@@ -1,6 +1,16 @@
 "use strict"
 
 function register() {
+    let auth;
+    const checkbox1 = document.querySelector('input[name="checkbox1"]');
+    const checkbox2 = document.querySelector('input[name="checkbox2"]');
+    if (checkbox1.checked) {
+        auth = 1;
+    } else if (checkbox2.checked) {
+        auth = 2;
+    } else {
+        auth = 0;
+    }
     let name = document.querySelector("#name").value;
     let email = document.querySelector("#email").value;
     let password = document.querySelector("#password").value;
@@ -38,7 +48,8 @@ function register() {
         data: {
             email,
             name,
-            password
+            password,
+            auth
         },
         success(res) {
             window.location.href = res.location;
@@ -48,3 +59,15 @@ function register() {
         }
     })
 }
+
+function handleCheckboxClick(event) {
+    const checkbox1 = document.querySelector('input[name="checkbox1"]');
+    const checkbox2 = document.querySelector('input[name="checkbox2"]');
+    
+    if (event.target === checkbox1 && checkbox2.checked) {
+      checkbox2.checked = false;
+    } else if (event.target === checkbox2 && checkbox1.checked) {
+      checkbox1.checked = false;
+    }
+  }
+  

@@ -12,7 +12,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:w522328z@localhost
 db = SQLAlchemy(app)
 class User(db.Model):
     __tablename__ = 'user'
-    iduser = db.Column(db.Integer, primary_key=True)
+    iduser = db.Column(db.Integer, primary_key=True, autoincrement=True, default=1)
     name = db.Column(db.String(45), nullable=False)
     email = db.Column(db.String(45), nullable=True)
     phone = db.Column(db.String(45), nullable=True)
@@ -25,6 +25,34 @@ class User(db.Model):
         cartcount = Cart.query.filter(Cart.iduser == self.iduser).count()
         header['cartcount'] = cartcount
         return header
+    def get_auth(self):
+        return self.auth
+class Merchant(db.Model):
+    __tablename__ = 'merchant'
+    id = db.Column(db.Integer, primary_key=True)
+    iditem = db.Column(db.Integer)
+    image = db.Column(db.Text)
+    image2 = db.Column(db.Text)
+    image3 = db.Column(db.Text)
+    image4 = db.Column(db.Text)
+    species = db.Column(db.Integer)
+    store = db.Column(db.Integer)
+    price = db.Column(db.DECIMAL(5, 2))
+    desc = db.Column(db.String(45))
+    creatime = db.Column(db.DateTime, default=datetime.now)
+    name = db.Column(db.String(45), nullable=True)
+
+    def __init__(self, iditem, image, image2, image3, image4, species, store, price, desc, name):
+        self.iditem = iditem
+        self.image = image
+        self.image2 = image2
+        self.image3 = image3
+        self.image4 = image4
+        self.species = species
+        self.store = store
+        self.price = price
+        self.desc = desc
+        self.name = name
 class Item(db.Model):
     __tablename__ = 'item'
     iditem = db.Column(db.Integer, primary_key=True)
@@ -82,6 +110,7 @@ def index():
         user['name'] = dbuser.name
         cartcount = Cart.query.filter(Cart.iduser == dbuser.iduser).count()
         user['cartcount'] = cartcount
+        user['auth'] = dbuser.get_auth()
 
     slides = [{'href': "product.html", 'url': url_for('static', filename="image/banner/01.png")},
               {'href': "product.html", 'url': url_for('static', filename="image/banner/02.png")},
@@ -103,6 +132,7 @@ def index():
                            list1=list1,
                            list2=list2,
                            headerlist=headerlist)
+
 @app.route('/product')
 @app.route('/product/<int:_id>')
 def product(_id=0):
@@ -117,7 +147,6 @@ def product(_id=0):
     product['price'] = item.price
     product['slides'] = [{'url': item.image}]
     product['images'] = [{'url': item.image2}, {'url': item.image3}, {'url': item.image4}]
-    #product['images'] = [{'url': img.url}, {'url': img.url}, {'url': img.url}]
 
     headerlist = [[Item.query.offset(random.randint(0, 13)).limit(random.randint(3, 6)).all()
                    for col in range(random.randint(2, 4))] for i in range(7)]
@@ -132,12 +161,14 @@ def product(_id=0):
 def cart():
     if 'iduser' not in session:
         return redirect(url_for('login', src=request.url))
-    carts = Cart.query.filter(User.iduser == session['iduser']).all()
     user = User.query.get(session['iduser']).header()
+    carts = Cart.query.join(User).filter(User.name == user['name']).all()
+    print("用户id: "+str(user))
     total_price = 0
     for cart in carts:
         total_price += cart.item.price * cart.count
     return render_template('cart.html', carts=carts,user=user, total_price=total_price)
+
 @app.route('/order')
 def order():
     if 'iduser' not in session:
@@ -159,6 +190,11 @@ def login():
 def register():
     return render_template('register.html')
 
+@app.route('/manager_product')
+def manager_product():
+    user = User.query.get(session['iduser']).header()
+   # merchant = Merchant.query.join(User).filter(User.name == user['name']).all()
+    return render_template('manager_product.html' ,user=user)
 
 @app.route('/message')
 def message():
@@ -187,15 +223,19 @@ def api_logout():
 
 @app.route('/api/register', methods=["POST"])
 def api_register():
+    auth = request.form.get('auth')
     email = request.form.get('email')
     name = request.form.get('name')
     password = request.form.get('password')
+    max_iduser = db.session.query(func.max(User.iduser)).scalar()
+    if max_iduser is None:
+        max_iduser = 0
     if User.query.filter(User.email == email).first():
         return jsonify({'status': '邮箱重复'}), 400
     elif User.query.filter(User.name == name).first():
         return jsonify({'status': '用户名重复'}), 400
     else:
-        user = User(name=name, email=email, password=password)
+        user = User(iduser=max_iduser+1, name=name, email=email, password=password, auth=auth)
         db.session.add(user)
         db.session.commit()
         return jsonify({'status': 'ok', 'location': url_for('index')})
@@ -221,7 +261,7 @@ def api_addcart():
             max_idorder = 0
 
         # 创建 Cart 对象并将数据存储到数据库中
-        cart = Cart(idorder=max_idorder + 1,  iduser=1,iditem=iditem, count=1)
+        cart = Cart(idorder=max_idorder + 1,  iduser=userid, iditem=iditem, count=1)
         
         db.session.add(cart)
         db.session.commit()

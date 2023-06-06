@@ -65,6 +65,10 @@
             <a href="{{ url_for('order') }}">我的订单</a>
             <span class="sep">|</span>
             <a href="javascript:void(0);" onclick="logout()">退出登录</a>
+            {% if user.auth == 2 %}
+            <span class="sep">|</span>
+            <a href="{{ url_for('manager_product') }}">商品管理</a>
+            {% endif %}
             {% else %}
             <a href="{{ url_for('login') }}">登录</a>
             <span class="sep">|</span>
