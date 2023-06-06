@@ -21,5 +21,3 @@ pytest -v test.py
 ```cmd
 pytest -v test.py
 ```
-
-

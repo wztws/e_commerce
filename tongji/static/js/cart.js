@@ -17,11 +17,46 @@ function selall(checked) {
 function del(e) {
     e = e.target;
     e = e.parentNode.parentNode.parentNode;
-    e.remove();
-    resum();
-    recount();
-    recheck();
+
+    // 获取自定义属性的值
+    var itemName = e.querySelector('.name').innerText;
+    var itemPrice = e.querySelector('.col-price span').innerText;
+    var orderId = e.querySelector('.col-action a').getAttribute('data-idorder');
+
+    // 创建包含要发送的数据的对象
+    var data = {
+        name: itemName,
+        price: itemPrice,
+        idorder: orderId
+    };
+
+    // 发送AJAX请求
+    fetch('/del_cart', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (response.ok) {
+            // 请求成功处理逻辑
+            e.remove();
+            resum();
+            recount();
+            recheck();
+        } else {
+            // 请求失败处理逻辑
+            console.error('请求失败');
+        }
+    })
+    .catch(error => {
+        console.error('发生错误:', error);
+    });
 }
+
+
+
 
 function minus(e) {
     e = e.target;

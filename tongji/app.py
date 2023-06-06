@@ -231,6 +231,22 @@ def api_addcart():
         return jsonify({'status': 'error', 'message': '产品未找到！'})
    
 
+@app.route('/del_cart', methods=['POST'])
+def del_cart():
+    data = request.json
+
+    item_name = data.get('name')
+    item_price = data.get('price')
+    order_id = data.get('idorder')
+    print(item_name)
+    print(item_price)
+    print(order_id)
+    Cart.query.filter_by(idorder=order_id).delete()
+    db.session.commit()
+    # 在这里进行进一步的处理，例如保存到数据库或执行其他操作
+
+    return 'Success'  # 返回适当的响应
+
 @app.errorhandler(404)
 def not_foundPage(error):
     return redirect(url_for('index'))
