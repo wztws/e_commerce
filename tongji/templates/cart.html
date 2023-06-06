@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的购物车-济商城</title>
+    <title>我的购物车</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/cart.css') }}">
     <script src="{{ url_for('static', filename='js/ajax.js') }}"></script>
@@ -88,8 +88,7 @@
                             <div class="cart-item clearfix">
                                 <div class="col col-check"><input class="check-box" type="checkbox" 
                                         onchange="recheck(event)"></div>
-                                <div class="col col-img"><img 
-                                        src="{{ url_for('static', filename='image/'+cart.item.image) }}" height="80"
+                                <div class="col col-img"><img src="{{ url_for('static', filename='image/'+cart.item.image) }}" height="80"
                                         width="80"></div>
                                 <div class="col col-name">
                                     <h3 class="name">{{cart.item.name}}</h3> 

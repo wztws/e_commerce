@@ -43,7 +43,7 @@ CREATE TABLE `cart` (
 
 LOCK TABLES `cart` WRITE;
 /*!40000 ALTER TABLE `cart` DISABLE KEYS */;
-INSERT INTO `cart` VALUES (1,1,1,1);
+INSERT INTO `cart` VALUES (1,1,1,1),(2,1,6,1),(3,1,4,1),(4,1,2,1),(5,1,2,1),(6,1,4,1);
 /*!40000 ALTER TABLE `cart` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -175,6 +175,7 @@ CREATE TABLE `user` (
   `phone` varchar(45) DEFAULT NULL,
   `password` varchar(45) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
+  `auth` int DEFAULT NULL,
   PRIMARY KEY (`iduser`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -185,7 +186,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'wz','1726307829@qq.com',NULL,'111','2023-05-16 14:30:50');
+INSERT INTO `user` VALUES (1,'wz','1726307829@qq.com',NULL,'111','2023-05-16 14:30:50',NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -198,4 +199,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-05  9:18:49
+-- Dump completed on 2023-06-06 11:28:14

@@ -1,6 +1,7 @@
 import os
 import json
 import random
+from sqlalchemy import func
 from datetime import datetime, timedelta
 from flask import Flask, request, render_template, session, redirect, url_for, make_response, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -17,7 +18,7 @@ class User(db.Model):
     phone = db.Column(db.String(45), nullable=True)
     password = db.Column(db.String(45), nullable=True)
     create_time = db.Column(db.DateTime, default=datetime.now)
-
+    auth=db.Column(db.Integer)   
     def header(self):
         header = {}
         header['name'] = self.name
@@ -45,7 +46,7 @@ class Order(db.Model):
     user = db.relationship('User', backref='orders')
 class Cart(db.Model):
     __tablename__ = 'cart'
-    idorder = db.Column(db.Integer, primary_key=True)
+    idorder = db.Column(db.Integer, primary_key=True, autoincrement=True, default=1)
     iduser = db.Column(db.Integer, db.ForeignKey('user.iduser'))
     iditem = db.Column(db.Integer, db.ForeignKey('item.iditem'))
     count = db.Column(db.DECIMAL(2), nullable=True)
@@ -71,6 +72,7 @@ class OrderItem(db.Model):
 with app.app_context():
     db.create_all()
 
+
 @app.route('/')
 def index():
     user = {}
@@ -87,7 +89,7 @@ def index():
               {'href': "product.html", 'url': url_for('static', filename="image/banner/04.png")},
               {'href': "product.html", 'url': url_for('static', filename="image/banner/05.png")}]
 
-    list1 = Item.query.limit(8).all()
+    list1 = Item.query.limit(12).all()
     print(list1)
 
     list2 = Item.query.offset(8).limit(10).all()
@@ -200,18 +202,34 @@ def api_register():
 
 @app.route('/api/addcart', methods=['POST'])
 def api_addcart():
-    itemid = request.form.get('itemid')
-    count = request.form.get('count')
-    item = Item.query.get(itemid)
-    user = User.query.get(session['iduser'])
-    cart = Cart(
-        iduser=user.iduser,
-        iditem=itemid,
-        count=count
-    )
-    db.session.add(cart)
-    db.session.commit()
-    return jsonify({'status': 'ok'})
+   data = request.json
+   user_name = data['user_name']
+   product_name = data['product_name']
+   print(product_name)
+   print(user_name)
+     # 查询与产品名称匹配的Item对象
+   item = Item.query.filter_by(name=product_name).first()
+   user = User.query.filter_by(name=user_name).first()
+   if item:
+        iditem = item.iditem  # 获取iditem值
+        userid = user.iduser
+       # iduser = 1  # 假设用户ID为1，根据实际情况获取用户ID
+        print(iditem)
+        print(userid)
+        max_idorder = db.session.query(func.max(Cart.idorder)).scalar()
+        if max_idorder is None:
+            max_idorder = 0
+
+        # 创建 Cart 对象并将数据存储到数据库中
+        cart = Cart(idorder=max_idorder + 1,  iduser=1,iditem=iditem, count=1)
+        
+        db.session.add(cart)
+        db.session.commit()
+
+        return jsonify({'status': 'success', 'message': '成功添加到购物车！'})
+   else:
+        return jsonify({'status': 'error', 'message': '产品未找到！'})
+   
 
 @app.errorhandler(404)
 def not_foundPage(error):
