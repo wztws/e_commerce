@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/span.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/cart.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/manager_product.css') }}">
   <script src="{{ url_for('static', filename='js/cart.js') }}"></script>
   <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </head>
@@ -43,20 +44,7 @@
                 购物车
                 <span class="cart-num">（{{ user.cartcount }}）</span>
              </a>
-             <!-- 购物车popup -->
-             <!-- <div class="cart-menu">
-                <div class="menu-content">
-                   <div class="loading">
-                      <div class="loader"></div>
-                   </div>
-                   <div class="cart-list">
- 
-                   </div>
-                   <div class="cart-total"></div>
-                   <div class="msg msg-error hide"></div>
-                   <div class="msg msg-empty hide">购物车里面还没有商品，赶紧选购吧！</div>
-                </div>
-             </div> -->
+        
           </div>
           <!-- 右侧个人信息 -->
           
@@ -82,36 +70,49 @@
             <div class="col col-img">&nbsp;</div>
             <div class="col col-name">商品名称</div>
             <div class="col col-price">单价</div>
-            <div class="col col-num">数量</div>
-            <div class="col col-total">小计</div>
-            <div class="col col-action">操作</div>
-        </div>
-        <div class="list-body">
-            {% for merchant in merchant %}
-            <div class="cart-item-warp">
-                <div class="cart-item clearfix">
-                    <div class="col col-check"><input class="check-box" type="checkbox" 
-                            onchange="recheck(event)"></div>
-                    <div class="col col-img"><img src="{{ url_for('static', filename='image/'+merchant.image) }}" height="80"
-                            width="80"></div>
-                    <div class="col col-name">
-                        <h3 class="name">{{merchant.name}}</h3> 
-                    </div>
-                    <div class="col col-price"><span>{{merchant.price}}</span>元</div>
-                    <div class="col col-num">
-                        <div class="num-box">
-                            <a class="minus" href="javascript:void(0);" onclick="minus(event)">-</a>
-                            <input class="num" value="{{merchant.count}}"  
-                                    onchange="calc(event.target.parentNode.parentNode.parentNode)"></input>
-                            <a class="plus" href="javascript:void(0);" onclick="plus(event)">+</a>
-                        </div>
-                    </div>
-                    <div class="col col-total"><span></span>元</div>
-                    <div class="col col-action"><a href="javascript:void(0);" onclick="del(event)"  data-name="{{ merchant.name }}" data-price="{{merchant.price }}" data-idorder="{{merchant.id }}">×</a> 
-                    </div>
-                </div>
+            <div class="col col-num">库存</div>
+            <div class="col col-total">描述</div>
+            <div>
+                <button onclick="redirectToNewPage()">添加商品</button>
+                <script>
+                    function redirectToNewPage() {
+                        window.location.href = "/add_item";
+                    }
+                </script>
             </div>
-            {% endfor %}
         </div>
+        
+        <!-- 其他代码... -->
+
+<div class="list-body">
+    <table>
+      <thead>
+        <tr>
+
+          <th>商品名称</th>
+          <th>&#12288;&#12288;&#12288;</th>
+          <th>单价</th>
+          <th>库存</th>
+          <th>描述</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        {% for merchant in merchants %}
+        <tr>
+
+          <td>{{ merchant.name }}</td>
+          <td><img src="{{ url_for('static', filename='image/' + merchant.image) }} "class="image-thumbnail"></td>
+          <td>{{ merchant.price }}</td>
+          <td>{{ merchant.store }}</td>
+          <td>{{ merchant.desc }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  
+  <!-- 其他代码... -->
+  
     </div>
 </div>
