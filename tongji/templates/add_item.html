@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>商品添加</title>
+  <link rel="shortcut icon" href="image/zhihui.ico" type="image/x-icon">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/span.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/add_item.css') }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.js"></script>
+  <script src="{{ url_for('static', filename='js/add_item.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+</head>
+<body>
+  <div id="app">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">   
+<script src="{{ url_for('static', filename='js/ajax.js') }}"></script>
+<script src="{{ url_for('static', filename='js/header.js') }}"></script>
+  
+<div class="home-header">
+    <!-- 全局导航(长条) -->
+    <div class="site-topbar">
+       <div class="container clearfix">
+          <!-- 左侧导航 -->
+          <div class="topbar-nav">
+             <a href="{{ url_for('index') }}">swjtu电商平台</a>
+             <span class="sep">|</span>
+             <a href="{{ url_for('cart') }}">购物车</a>
+             <span class="sep">|</span>
+             <a href="{{ url_for('order') }}">我的订单</a>
+             <span class="sep">|</span>
+             <a href="https://www.swjtu.edu.cn">swjtu</a>
+             <span class="sep">|</span>
+             <a href="http://jwc.swjtu.edu.cn/index.html">swjtu教务</a>
+             <span class="sep">|</span>
+ 
+          </div>
+          <!-- 右侧购物车 -->
+          <div class="topbar-cart">
+             <!-- 购物车按钮 -->
+             <a class="cart-mini" href="{{ url_for('cart') }}">
+                <em class="icon-cart"></em>
+                购物车
+                <span class="cart-num">（{{ user.cartcount }}）</span>
+             </a>
+          </div>
+          <!-- 右侧个人信息 -->
+          <div class="topbar-info">
+             {% if user %}
+             <a href="{{ url_for('cart') }}">{{user.name}}</a>
+             <span class="sep">|</span>
+             <a href="{{ url_for('order') }}">我的订单</a>
+             <span class="sep">|</span>
+             <a href="javascript:void(0);" onclick="logout()">退出登录</a>
+             {% if user.auth == 2 %}
+             <span class="sep">|</span>
+             <a href="{{ url_for('manager_product') }}">商品管理</a>
+             {% endif %}
+             {% else %}
+             <a href="{{ url_for('login') }}">登录</a>
+             <span class="sep">|</span>
+             <a href="{{ url_for('register') }}">注册</a>
+             {% endif %}
+          </div>
+       </div>
+    </div>
+</div>
+  </div>
+  <div>
+    <button class="back" onclick="redirectToNewPage()">返回</button>
+    <script>
+        function redirectToNewPage() {
+            window.location.href = "/manager_product";
+        }
+    </script>
+  </div>
+  <form action="/submit" method="POST" >
+    <div class="add-item-form">
+        <div class="input-container">
+          <input type="text" name="item-name" placeholder="商品名称">
+        </div>
+        
+        <div class="input-container">
+          <input type="number" name="item-species" placeholder="类别（请输入1~8之间的数字）"><br>
+          &#12288;1：穿戴，衣物&#12288;2：观赏物，古玩<br>
+          &#12288;3：数码方面
+          &#12288;4：学习，教材,文具<br>
+          &#12288;5：户外，健身
+          &#12288;6：化妆，外观<br>
+          &#12288;7：食物，零食
+          &#12288;8：家居
+        </div>
+
+        <div class="input-container">
+          <input type="number" name="item-stock" placeholder="库存">
+        </div>
+        
+        <div class="input-container">
+          <input type="number" name="item-price" placeholder="定价">
+        </div>
+        
+        <div class="input-container">
+          <textarea name="item-description" placeholder="商品描述"></textarea>
+        </div>
+      
+        <div class="preview-container">
+            <div class="upload-container" onclick="document.querySelector('#file-input1').click()">
+              <input  class="hide-input" id="file-input1" type="file" name="image1" onchange="previewImage(this, 'preview1')">
+              <img id="preview1" src="" alt="上传商品图片">
+            </div>
+          
+            <div class="upload-container" onclick="document.querySelector('#file-input2').click()">
+              <input  class="hide-input"  id="file-input2" type="file" name="image2" onchange="previewImage(this, 'preview2')">
+              <img id="preview2" src="" alt="上传商品图片">
+            </div>
+          
+            <div class="upload-container" onclick="document.querySelector('#file-input3').click()">
+              <input  class="hide-input"  id="file-input3" type="file" name="image3" onchange="previewImage(this, 'preview3')">
+              <img id="preview3" src="" alt="上传商品图片">
+            </div>
+
+            <div class="upload-container" onclick="document.querySelector('#file-input4').click()">
+              <input  class="hide-input"  id="file-input4" type="file" name="image4" onchange="previewImage(this, 'preview4')">
+              <img id="preview4" src="" alt="上传商品图片">
+            </div>
+
+          </div>
+          <button class="sub" type="submit" onclick="return submitForm()">提交</button>
+          
+      </div>
+</form>
+
+
+<!-- 页面内容 -->
+
+
+  

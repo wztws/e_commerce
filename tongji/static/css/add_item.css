@@ -1,0 +1,48 @@
+.add-item-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 60px;
+}
+.input-container {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   margin-bottom: 40px;
+}
+.preview-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 600px;
+    margin-top: 20px;
+}
+  
+.upload-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 200px;
+    border: 1px solid #ccc; /* 添加边框样式 */
+    padding: 10px; /* 添加内边距 */
+    cursor: pointer; /* 添加鼠标指针样式 */
+}
+.upload-container img {
+    max-width: 100%;
+    height: auto;
+
+}
+.hide-input {
+    display: none;
+  }
+.sub{
+    margin-top: 80px;
+}
+.back{
+    margin-top: 20px;
+}

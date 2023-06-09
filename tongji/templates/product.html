@@ -7,6 +7,8 @@
     <title>SWJTU商城</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/product.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.js"></script>
     <script src="{{ url_for('static', filename='js/ajax.js') }}"></script>
     <script src="{{ url_for('static', filename='js/product.js') }}"></script>
 </head>
@@ -88,10 +90,9 @@
                         <div class="detail-addcart"><a href="javascript:void(0);" onclick="addcart()">加入购物车</a></div>
                         <script>
                             function addcart() {
-                                
+            
                                 var userName = "{{ user.name }}"; // 获取用户名称
                                 var productName = "{{ product.name }}"; // 获取产品名称
-
                                 // 创建包含要发送的数据的对象
                                 var data = {
                                     user_name: userName,
@@ -108,9 +109,16 @@
                                 })
                                 .then(response => response.json())
                                 .then(data => {
-                                    if (data.status === 'success') {
-                                        // 添加成功，显示提示弹窗
-                                        alert(data.message);
+                                    if (data.message === 'success') {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: '添加成功',
+                                            showConfirmButton: false,
+                                            timer: 1000 // 2秒后自动关闭弹窗
+                                        }).then(() => {
+                                            // 2秒后返回到manager_product.html页面
+                                            window.location.href = '/templates/manager_product.html';
+                                        });
                                     } else {
                                         // 添加失败，显示提示弹窗
                                         alert(data.message);
