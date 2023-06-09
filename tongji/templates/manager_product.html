@@ -88,8 +88,9 @@
             <div class="cart-item clearfix">
               <div class="col col-check"><input class="check-box" type="checkbox"
               onchange="recheck(event)"></div>
+                <a href="{{ url_for('product') + '/%d' % merchant.iditem }}">
               <div class="col col-img"><img src="{{url_for('static',filename='image/'+merchant.image)}}"height="80"
-              width="80"></div>
+                                            width="80"></div></a>
               <div class="col col-name"><span>{{merchant.name}}</span>
             </div>
             <div class="col col-price"><span>{{merchant.price}}</span>元</div>

@@ -165,13 +165,23 @@ def product(_id=0):
     if 'iduser' in session:
         user = User.query.get(session['iduser']).header()
     item = Item.query.filter(Item.iditem == _id).first()
-    img = Image.query.filter(Image.idimage == _id).first()
-    product = {}
-    product['name'] = item.name
-    product['desc'] = item.desc
-    product['price'] = item.price
-    product['slides'] = [{'url': item.image}]
-    product['images'] = [{'url': item.image2}, {'url': item.image3}, {'url': item.image4}]
+    print(item.iditem)
+    mer = Merchant.query.filter(Merchant.iditem == item.iditem).first()
+    print(mer.iditem)
+    use = User.query.filter(User.iduser == mer.id).first()
+    print(use.name)
+    user_name = use.name
+    #merchant = item.iditem
+    #merchant_id = merchant.id
+  #  user_name = User.query.join(Merchant).filter(Merchant.id == merchant_id).first().name
+
+    product = {
+        'name': item.name,
+        'desc': item.desc,
+        'price': item.price,
+        'slides': [{'url': item.image}],
+        'images': [{'url': item.image2}, {'url': item.image3}, {'url': item.image4}]
+    }
 
     headerlist = [[Item.query.offset(random.randint(0, 13)).limit(random.randint(3, 6)).all()
                    for col in range(random.randint(2, 4))] for i in range(7)]
@@ -179,7 +189,8 @@ def product(_id=0):
     return render_template('product.html',
                            user=user,
                            product=product,
-                           headerlist=headerlist)
+                           headerlist=headerlist,
+                           user_name=user_name)
 
 
 @app.route('/cart')
@@ -231,7 +242,11 @@ def manager_product():
 
 @app.route('/message')
 def message():
-    return render_template('message.html')
+    user = db.session.get(User, session['iduser'])
+    user_name = user.name if user is not None else None
+    user = User.query.filter_by(name=user_name).first()
+    username=user.name
+    return render_template('message.html', username=username)
 
 
 @app.route('/api/login', methods=["POST"])
