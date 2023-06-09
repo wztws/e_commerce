@@ -29,7 +29,10 @@ function del(e) {
         price: itemPrice,
         idorder: orderId
     };
-
+    var confirmDelete = confirm("确认移除吗？");
+    if (!confirmDelete) {
+        return; // 如果用户取消删除操作，则停止执行
+    }
     // 发送AJAX请求
     fetch('/del_cart', {
         method: 'POST',
@@ -54,6 +57,7 @@ function del(e) {
         console.error('发生错误:', error);
     });
 }
+
 
 
 

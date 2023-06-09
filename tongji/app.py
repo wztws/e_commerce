@@ -1,14 +1,15 @@
 import os
 import json
 import random
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from datetime import datetime, timedelta
 from flask import Flask, request, render_template, session, redirect, url_for, make_response, jsonify
 from flask_sqlalchemy import SQLAlchemy
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'w522328z'  # 设置session加密的密钥
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=2)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@localhost:3306/webhw'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:w522328z@localhost:3306/webhw'
 db = SQLAlchemy(app)
 class User(db.Model):
     __tablename__ = 'user'
@@ -117,8 +118,9 @@ with app.app_context():
 def index():
     user = {}
     if 'iduser' in session:
-        dbuser = User.query.get(session['iduser'])
-        print(dbuser)
+        #dbuser = User.query.get(session['iduser'])
+       # print(dbuser)
+        dbuser = db.session.get(User, session['iduser'])
         user['name'] = dbuser.name
         cartcount = Cart.query.filter(Cart.iduser == dbuser.iduser).count()
         user['cartcount'] = cartcount
@@ -133,7 +135,7 @@ def index():
     list1 = Item.query.limit(12).all()
     print(list1)
 
-    list2 = Item.query.offset(8).limit(10).all()
+    list2 = Item.query.offset(15).limit(14).all()
 
     headerlist = [[Item.query.offset(random.randint(0, 13)).limit(random.randint(3, 6)).all()
                    for col in range(random.randint(2, 4))] for i in range(7)]
@@ -210,7 +212,8 @@ def add_item():
 
 @app.route('/manager_product')
 def manager_product():
-    user_name = User.query.get(session['iduser']).name
+    user = db.session.get(User, session['iduser'])
+    user_name = user.name if user is not None else None
     user = User.query.filter_by(name=user_name).first()
     merchants = Merchant.query.filter_by(id=user.iduser).all()
     return render_template('manager_product.html', merchants=merchants, user=user)
@@ -306,8 +309,26 @@ def del_cart():
     Cart.query.filter_by(idorder=order_id).delete()
     db.session.commit()
     # 在这里进行进一步的处理，例如保存到数据库或执行其他操作
-
     return 'Success'  # 返回适当的响应
+
+@app.route('/del_merchant', methods=['POST'])
+def del_merchant():
+    data = request.get_json()
+    item_id = data.get('id')
+    # 在这里进行处理，例如删除对应的商户或执行其他操作
+    print(item_id)
+    merchant = Merchant.query.filter_by(iditem=item_id).first()
+    item = Item.query.filter_by(iditem=item_id).first()
+
+    # 删除商户和商品
+    if merchant:
+        db.session.delete(merchant)
+    if item:
+        db.session.delete(item)
+
+    db.session.commit()
+    return 'Success'
+
 
 @app.route('/submit', methods=['POST']) #添加商品
 def additem():
@@ -369,6 +390,7 @@ def additem():
 def not_foundPage(error):
     return redirect(url_for('index'))
 
+<<<<<<< HEAD
 # 搜索页面
 @app.route('/search')
 def search():
@@ -403,5 +425,7 @@ def center():
         total_price += cart.item.price * cart.count
     return render_template('center.html',user=user)
 
+=======
+>>>>>>> ea53c83054ad4cc42f424842608b43ba0fe1eba6
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
