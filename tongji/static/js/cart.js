@@ -129,3 +129,35 @@ function logout() {
         }
     })
 }
+
+function showPopup() {
+    // 获取选中的商品信息和总金额
+    var selectedItems = document.querySelectorAll('.cart-item input[type="checkbox"]:checked');
+    var totalAmount = 0;
+
+    // 构建弹窗内容
+    var popupContent = '<ul>';
+    for (var i = 0; i < selectedItems.length; i++) {
+        var item = selectedItems[i].closest('.cart-item');
+        var name = item.querySelector('.name').textContent;
+        var price = parseFloat(item.querySelector('.col-price span').textContent);
+        var quantity = parseInt(item.querySelector('.num').value);
+        var subtotal = price * quantity;
+        var imageUrl = item.querySelector('.col-img img').src;
+
+        popupContent += '<li><img src="' + imageUrl + '"> ' + name + ' x ' + quantity + ' = ' + subtotal + '元</li>';
+
+        totalAmount += subtotal;
+    }
+    popupContent += '</ul>';
+
+    // 显示弹窗
+    document.getElementById('selected-items').innerHTML = popupContent;
+    document.getElementById('total-amount').textContent = totalAmount;
+    document.querySelector('.overlay').style.display = 'flex';
+}
+
+function closePopup() {
+    // 关闭弹窗
+    document.querySelector('.overlay').style.display = 'none';
+}

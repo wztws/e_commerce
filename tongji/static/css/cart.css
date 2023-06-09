@@ -1,5 +1,6 @@
 body {
-  font: 14px/1.5 Helvetica Neue, Helvetica, Arial, Microsoft Yahei, Hiragino Sans GB, Heiti SC, WenQuanYi Micro Hei, sans-serif;
+  font: 14px/1.5 Helvetica Neue, Helvetica, Arial, Microsoft Yahei,
+ Hiragino Sans GB, Heiti SC, WenQuanYi Micro Hei, sans-serif;
   font-size: 14px;
   color: #333;
 }
@@ -416,4 +417,60 @@ a:hover {
   background-color: #f25807;
   border-color: #f25807;
   color: #fff;
+}
+
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.popup {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  max-width: 1200px; /* 调整弹窗的最大宽度 */
+  width: 800px;
+  height: 400px;
+}
+
+.popup h3 {
+  margin-top: 0;
+}
+
+.popup p {
+  margin-bottom: 10px;
+}
+
+.popup button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.popup img {
+  max-width: 100px;
+  max-height: 100px;
+  margin-right: 10px;
+}
+
+.popup ul {
+  padding: 0;
+  margin: 20px 0;
+}
+
+.popup li {
+  margin-bottom: 10px;
+  font-family: Noto Sans, sans-serif;
+  font-size: 14px;
 }

@@ -116,12 +116,21 @@
                             <span class="cart-total">共 <span>1</span> 件商品，已选择 <span>1</span> 件</span>
                         </div>
                         <span class="total-price">合计：<em>89</em>元
-                            <a href="javascript:void(0);" class="btn">去结算</a>
+                            <a href="javascript:void(0);" class="btn"  onclick="showPopup()">去结算</a>
                         </span>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="overlay">
+            <div class="popup">
+                <h3>结算信息</h3>
+                <div id="selected-items"></div>
+                <p>总金额: <span id="total-amount"></span>元</p>
+                <button onclick="closePopup()">关闭</button>
+            </div>
+        </div>
+
         <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
 <!-- 页脚部分 -->
 <div class="home-footer">
