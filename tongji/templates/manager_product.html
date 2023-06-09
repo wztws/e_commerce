@@ -81,35 +81,58 @@
                 </script>
             </div>
         </div>
-        
+        <div class="list-body">
+          {% for merchant in merchants %}
+          <div class="cart-item-warp">
+            <form action="/del_merchant" method="post">
+            <div class="cart-item clearfix">
+              <div class="col col-check"><input class="check-box" type="checkbox"
+              onchange="recheck(event)"></div>
+              <div class="col col-img"><img src="{{url_for('static',filename='image/'+merchant.image)}}"height="80"
+              width="80"></div>
+              <div class="col col-name"><span>{{merchant.name}}</span>
+            </div>
+            <div class="col col-price"><span>{{merchant.price}}</span>元</div>
+            <div class="col col-num"><span>{{merchant.store}}</span>件</div>
+            <div class="col col-total"><span>{{merchant.desc}}</span></div>
+            <div class="col col-action"><a href="javascript:void(0);" onclick="de(event,'{{merchant.iditem}}')" >×</a> 
+              <script>
+                function de(e, id) {
+                  e = e.target;
+                  var confirmDelete = confirm("确认移除吗？");
+                  if (!confirmDelete) {
+                    return; // 如果用户取消删除操作，则停止执行
+                  }
+                  var xhr = new XMLHttpRequest();
+                  xhr.open('POST', '/del_merchant', true);
+                  xhr.setRequestHeader('Content-Type', 'application/json');
+                  xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                      // 请求成功，执行额外的操作
+                      console.log('删除成功');
+                    }
+                  };
+                  var data = JSON.stringify({id: id});
+                  xhr.send(data);
+                  e = e.parentNode.parentNode.parentNode;
+                  e.remove();
+                  resum();
+                  recount();
+                  recheck();
+
+                  // 发送AJAX请求到后端
+                 
+                }
+              </script>
+           </div>
+            </div>
+            </form>
+          </div>
+          {% endfor %}
+        </div>
         <!-- 其他代码... -->
 
-<div class="list-body">
-    <table>
-      <thead>
-        <tr>
-
-          <th>商品名称</th>
-          <th>&#12288;&#12288;&#12288;</th>
-          <th>单价</th>
-          <th>库存</th>
-          <th>描述</th>
-
-        </tr>
-      </thead>
-      <tbody>
-        {% for merchant in merchants %}
-        <tr>
-
-          <td>{{ merchant.name }}</td>
-          <td><img src="{{ url_for('static', filename='image/' + merchant.image) }} "class="image-thumbnail"></td>
-          <td>{{ merchant.price }}</td>
-          <td>{{ merchant.store }}</td>
-          <td>{{ merchant.desc }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+   
   </div>
   
   <!-- 其他代码... -->
