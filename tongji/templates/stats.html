@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>消费统计</title>
+	<script src="https://cdn.jsdelivr.net/npm/echarts@5.1.2/dist/echarts.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/moment/moment.min.js"></script>
+</head>
+<body>
+	<h1>消费统计</h1>
+	<label for="start">起始时间:</label>
+	<input type="date" id="start" name="start">
+	<label for="end">终止时间:</label>
+	<input type="date" id="end" name="end">
+	<label for="unit">统计单位:</label>
+	<select id="unit" name="unit">
+		<option value="day">天</option>
+		<option value="week">周</option>
+		<option value="month">月</option>
+		<option value="year">年</option>
+	</select>
+	<button onclick="getData()">获取数据</button>
+	<div id="chart1" style="width: 800px; height: 600px;"></div>
+	<div id="chart2" style="width: 800px; height: 600px;"></div>
+	<script>
+		function getData() {
+			var start = moment(document.getElementById('start').value).format('YYYY-MM-DD');
+			var end = moment(document.getElementById('end').value).format('YYYY-MM-DD');
+			var unit = document.getElementById('unit').value;
+			axios.get('/data', {
+				params: {
+					start: start,
+					end: end,
+					unit: unit
+				}
+			})
+			.then(function (response) {
+				var data = response.data;
+				renderChart1(data.chart1);
+				renderChart2(data.chart2);
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
+		}
+
+		function renderChart1(data) {
+			var chart1 = echarts.init(document.getElementById('chart1'));
+			var option1 = {
+				title: {
+					text: '消费金额统计'
+				},
+				tooltip: {},
+				xAxis: {
+					data: data.categories
+				},
+				yAxis: {},
+				series: [{
+					name: '金额',
+					type: 'bar',
+					data: data.values
+				}]
+			};
+			chart1.setOption(option1);
+		}
+
+		function renderChart2(data) {
+			var chart2 = echarts.init(document.getElementById('chart2'));
+			var option2 = {
+				title: {
+					text: '消费类别统计'
+				},
+				tooltip: {},
+				series: [{
+					name: '金额',
+					type: 'pie',
+					data: data
+				}]
+			};
+			chart2.setOption(option2);
+		}
+	</script>
+</body>
+</html>

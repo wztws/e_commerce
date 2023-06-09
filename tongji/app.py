@@ -5,11 +5,13 @@ from sqlalchemy import func, or_
 from datetime import datetime, timedelta
 from flask import Flask, request, render_template, session, redirect, url_for, make_response, jsonify
 from flask_sqlalchemy import SQLAlchemy
+import json
+from collections import defaultdict
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'w522328z'  # 设置session加密的密钥
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=2)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:w522328z@localhost:3306/webhw'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@localhost:3306/webhw'
 db = SQLAlchemy(app)
 class User(db.Model):
     __tablename__ = 'user'
@@ -22,7 +24,16 @@ class User(db.Model):
     auth=db.Column(db.Integer)   
     def header(self):
         header = {}
+        header['iduser'] = self.iduser
         header['name'] = self.name
+        header['email'] = self.email
+        header['phone'] = self.phone
+        header['password'] = self.password
+        header['create_time'] = self.create_time
+        if self.auth==1:
+            header['auth'] = '顾客'
+        elif self.auth==2:
+            header['auth'] = '商家'
         cartcount = Cart.query.filter(Cart.iduser == self.iduser).count()
         header['cartcount'] = cartcount
         return header
@@ -390,7 +401,6 @@ def additem():
 def not_foundPage(error):
     return redirect(url_for('index'))
 
-<<<<<<< HEAD
 # 搜索页面
 @app.route('/search')
 def search():
@@ -423,9 +433,67 @@ def center():
     total_price = 0
     for cart in carts:
         total_price += cart.item.price * cart.count
+    print(user)
     return render_template('center.html',user=user)
 
-=======
->>>>>>> ea53c83054ad4cc42f424842608b43ba0fe1eba6
+
+# 获取指定时间范围内的消费金额和类别信息
+def get_data(start, end):
+    # 查询数据
+    transactions = db.session.query(Transaction.amount, Transaction.category, Transaction.date).\
+        filter(Transaction.date >= start, Transaction.date <= end).all()
+
+    # 按照时间单位统计消费金额
+    unit = request.args.get('unit', 'day')
+    if unit == 'day':
+        date_format = '%Y-%m-%d'
+        delta = timedelta(days=1)
+    elif unit == 'week':
+        date_format = '%Y-%u'
+        delta = timedelta(weeks=1)
+    elif unit == 'month':
+        date_format = '%Y-%m'
+        delta = timedelta(days=30)
+    elif unit == 'year':
+        date_format = '%Y'
+        delta = timedelta(days=365)
+    else:
+        date_format = '%Y-%m-%d'
+        delta = timedelta(days=1)
+
+    date_dict = defaultdict(int)
+    for row in transactions:
+        date = datetime.strptime(row[2], '%Y-%m-%d')
+        date_key = datetime.strftime(date, date_format)
+        date_dict[date_key] += row[0]
+
+    # 构造返回数据
+    chart1_categories = []
+    chart1_values = []
+    for key, value in sorted(date_dict.items()):
+        chart1_categories.append(key)
+        chart1_values.append(value)
+
+    category_dict = defaultdict(int)
+    for row in transactions:
+        category_dict[row[1]] += row[0]
+
+    chart2_data = []
+    for key, value in sorted(category_dict.items(), key=lambda x: x[1], reverse=True):
+        chart2_data.append({'name': key, 'value': value})
+
+    # 关闭数据库连接
+    db.session.close()
+
+    return {'chart1': {'categories': chart1_categories, 'values': chart1_values}, 'chart2': chart2_data}
+
+# 返回数据接口
+@app.route('/stats')
+def stats():
+    start = request.args.get('start')
+    end = request.args.get('end')
+    data = get_data(start, end)
+    return jsonify(data)
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
