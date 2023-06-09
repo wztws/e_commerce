@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'w522328z'  # 设置session加密的密钥
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=2)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:w522328z@localhost:3306/webhw'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@localhost:3306/webhw'
 db = SQLAlchemy(app)
 class User(db.Model):
     __tablename__ = 'user'
@@ -290,6 +290,27 @@ def del_cart():
 @app.errorhandler(404)
 def not_foundPage(error):
     return redirect(url_for('index'))
+
+# 搜索页面
+@app.route('/search')
+def search():
+    if 'iduser' not in session:
+        return redirect(url_for('login', src=request.url))
+    user = User.query.get(session['iduser']).header()
+    carts = Cart.query.join(User).filter(User.name == user['name']).all()
+    print("用户id: "+str(user))
+    total_price = 0
+    for cart in carts:
+        total_price += cart.item.price * cart.count
+    query = request.args.get('query')
+    if not query:
+        # 没有输入关键字，显示搜索页面
+        return render_template('search.html')
+    else:
+        # 根据关键字进行商品搜索
+        items = Item.query.filter(Item.name.like(f'%{query}%')).all()
+        # 显示搜索结果页面
+        return render_template('search.html', query=query, items=items, carts=carts,user=user, total_price=total_price)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
