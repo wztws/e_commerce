@@ -60,7 +60,7 @@
          <!-- 右侧个人信息 -->
          <div class="topbar-info">
             {% if user %}
-            <a href="{{ url_for('cart') }}">{{user.name}}</a>
+            <a href="{{ url_for('center') }}">{{user.name}}</a>
             <span class="sep">|</span>
             <a href="{{ url_for('order') }}">我的订单</a>
             <span class="sep">|</span>

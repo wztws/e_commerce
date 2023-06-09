@@ -390,5 +390,18 @@ def search():
         # 显示搜索结果页面
         return render_template('search.html', query=query, items=items, carts=carts,user=user, total_price=total_price)
 
+# 个人中心页面
+@app.route('/center')
+def center():
+    if 'iduser' not in session:
+        return redirect(url_for('login', src=request.url))
+    user = User.query.get(session['iduser']).header()
+    carts = Cart.query.join(User).filter(User.name == user['name']).all()
+    print("用户id: "+str(user))
+    total_price = 0
+    for cart in carts:
+        total_price += cart.item.price * cart.count
+    return render_template('center.html',user=user)
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
