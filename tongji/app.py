@@ -21,7 +21,8 @@ class User(db.Model):
     phone = db.Column(db.String(45), nullable=True)
     password = db.Column(db.String(45), nullable=True)
     create_time = db.Column(db.DateTime, default=datetime.now)
-    auth=db.Column(db.Integer)   
+    auth=db.Column(db.Integer)
+    address=db.Column(db.Text)
     def header(self):
         header = {}
         header['iduser'] = self.iduser
@@ -66,6 +67,28 @@ class Merchant(db.Model):
         self.price = price
         self.desc = desc
         self.name = name
+class Order(db.Model):
+    __tablename__ = 'order'
+    idorder = db.Column(db.Integer, autoincrement=True)
+    iduser = db.Column(db.Text)
+    idmerchant = db.Column(db.Text)
+    iditem = db.Column(db.Text)
+    ifecho = db.Column(db.Integer)
+    price = db.Column(db.Text)
+    total = db.Column(db.Integer)
+    item_num = db.Column(db.Text)
+    time = db.Column(db.DateTime, primary_key=True, default=datetime.now)
+    def __init__(self, idorder, iduser, idmerchant, iditem, ifecho, price, total, item_num):
+        self.idorder = idorder
+        self.iduser = iduser
+        self.idmerchant = idmerchant
+        self.iditem = iditem
+        self.ifecho = ifecho
+        self.price = price
+        self.total = total
+        self.item_num  = item_num
+
+
 class Item(db.Model):
     __tablename__ = 'item'
     iditem = db.Column(db.Integer, primary_key=True)
@@ -79,7 +102,7 @@ class Item(db.Model):
     desc = db.Column(db.String(45), nullable=True)
     time = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
     def __init__(self, iditem, name, price, image, image2, image3, image4, species, desc):
-        self.iditem=iditem
+        self.iditem = iditem
         self.name = name
         self.price = price
         self.image = image
@@ -89,13 +112,9 @@ class Item(db.Model):
         self.species = species
         self.desc = desc
 
-class Order(db.Model):
-    __tablename__ = 'order'
-    idorder = db.Column(db.Integer, primary_key=True)
-    iduser = db.Column(db.Integer, db.ForeignKey('user.iduser'))
-    iditem = db.Column(db.Integer, db.ForeignKey('item.iditem'))
-    item = db.relationship('Item', backref='orders')
-    user = db.relationship('User', backref='orders')
+
+
+
 class Cart(db.Model):
     __tablename__ = 'cart'
     idorder = db.Column(db.Integer, primary_key=True, autoincrement=True, default=1)
@@ -104,21 +123,6 @@ class Cart(db.Model):
     count = db.Column(db.DECIMAL(2), nullable=True)
     item = db.relationship('Item', backref='carts')
     user = db.relationship('User', backref='carts')
-class Image(db.Model):
-    __tablename__ = 'image'
-    idimage = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.String(255), nullable=True)
-    iditem = db.Column(db.Integer, db.ForeignKey('item.iditem'))
-    item = db.relationship('Item', backref='images')
-class OrderItem(db.Model):
-    '''订单项'''
-    __tablename__ = "order_item"
-    _id = db.Column(db.Integer, primary_key=True)
-    orderid = db.Column(db.Integer, db.ForeignKey("order.idorder", ondelete='cascade'))
-    order = db.relationship("Order", backref=db.backref("the_Orderitem"))
-    itemid = db.Column(db.Integer, db.ForeignKey("item.iditem"))
-    item = db.relationship("Item", backref=db.backref("the_Orderitem"))
-    count = db.Column(db.Float, nullable=False)
 
 
 with app.app_context():
@@ -144,9 +148,9 @@ def index():
               {'href': "product.html", 'url': url_for('static', filename="image/banner/宣传图5.jpg")}]
 
     list1 = Item.query.limit(12).all()
-    print(list1)
+   # print(list1)
 
-    list2 = Item.query.offset(15).limit(14).all()
+    list2 = Item.query.offset(13).limit(16).all()
 
     headerlist = [[Item.query.offset(random.randint(0, 13)).limit(random.randint(3, 6)).all()
                    for col in range(random.randint(2, 4))] for i in range(7)]
@@ -165,16 +169,13 @@ def product(_id=0):
     if 'iduser' in session:
         user = User.query.get(session['iduser']).header()
     item = Item.query.filter(Item.iditem == _id).first()
-    print(item.iditem)
+   # print(item.iditem)
     mer = Merchant.query.filter(Merchant.iditem == item.iditem).first()
-    print(mer.iditem)
+   # print(mer.iditem)
     use = User.query.filter(User.iduser == mer.id).first()
-    print(use.name)
+    #print(use.name)
     user_name = use.name
-    #merchant = item.iditem
-    #merchant_id = merchant.id
-  #  user_name = User.query.join(Merchant).filter(Merchant.id == merchant_id).first().name
-
+    useaddress=use.address
     product = {
         'name': item.name,
         'desc': item.desc,
@@ -190,7 +191,8 @@ def product(_id=0):
                            user=user,
                            product=product,
                            headerlist=headerlist,
-                           user_name=user_name)
+                           user_name=user_name,
+                           user_address=useaddress)
 
 
 @app.route('/cart')
@@ -201,19 +203,20 @@ def cart():
     carts = Cart.query.join(User).filter(User.name == user['name']).all()
     print("用户id: "+str(user))
     total_price = 0
+    temp_id=[]
+    temp_name=[]
+    mer_inf=set()
     for cart in carts:
         total_price += cart.item.price * cart.count
-    return render_template('cart.html', carts=carts,user=user, total_price=total_price)
+        temp_id.append(cart.item.iditem)
+        mer=Merchant.query.filter(Merchant.iditem==cart.item.iditem).first()    
+        temp_name.append(cart.item.name)
+        use=User.query.filter(User.iduser==mer.id).first()
+        mer_inf.add(use.name)
 
-@app.route('/order')
-def order():
-    if 'iduser' not in session:
-        return redirect(url_for('login', src=request.url))
-    dbuser = User.query.get(session['iduser'])
-    headerlist = [[Item.query.offset(random.randint(0, 13)).limit(random.randint(3, 6)).all()
-                   for col in range(random.randint(2, 4))] for i in range(7)]
-
-    return render_template('order.html', user=dbuser.header(),headerlist=headerlist)
+    mer_inf = list(mer_inf)
+    print(mer_inf)
+    return render_template('cart.html', mer_inf=mer_inf,carts=carts,user=user, total_price=total_price)
 
 
 @app.route('/login')
@@ -230,6 +233,25 @@ def register():
 def add_item():
     user = User.query.get(session['iduser']).header()
     return render_template('add_item.html', user=user)
+
+@app.route('/order')
+def order():
+    if 'iduser' not in session:
+        return redirect(url_for('login', src=request.url))
+    user = User.query.get(session['iduser']).header()
+    orders = Order.query.filter(Order.iduser==user['iduser']).all()
+    id_list = []  # 创建一个空列表用于存储拆分后的 id
+    image_list=[]
+    for order in orders:
+        id_items = order.iditem.split(',')  # 使用逗号拆分字符串
+        last_id = id_items[-1]  # 获取列表末尾元素
+        id_list.extend(id_items)  # 将拆分后的 id 添加到列表中
+        iditem = Item.query.filter(Item.iditem==last_id).first()
+        image_list.append(iditem.image)
+    print(image_list)  # 打印 id 列表
+
+
+    return render_template('order.html', user=user, orders=orders,image_list=image_list)
 
 
 @app.route('/manager_product')
@@ -301,7 +323,6 @@ def api_addcart():
    if item:
         iditem = item.iditem  # 获取iditem值
         userid = user.iduser
-       # iduser = 1  # 假设用户ID为1，根据实际情况获取用户ID
         print(iditem)
         print(userid)
         max_idorder = db.session.query(func.max(Cart.idorder)).scalar()
@@ -409,8 +430,58 @@ def additem():
     response.status_code = 200
     return response
 
-   
 
+@app.route('/generate_order', methods=['POST'])  #订单生成
+def generate_order():
+    order_data = request.get_json()  # 获取从前端发送的JSON数据
+
+    # 处理订单数据
+    uName = order_data['uName']
+    mName = order_data['mName']
+    items = order_data['items']
+    total = order_data['totalprice']
+    echo = order_data['echo']
+    us = User.query.filter(User.name==uName).first()
+    uid=us.iduser
+    mna = []
+    for m in mName:
+        mid = User.query.filter(User.name==m).first()
+        mna.append(str(mid.name))
+    name=[]
+    id_item=[]
+    quantity=[]
+    subtotal=[]
+    imageUrl=[]
+    # 返回响应给前端
+    for item in items:
+        name.append(item['name'])
+        temp_name = item['name']
+        itemid = Item.query.filter(Item.name==temp_name).first()
+        id_item.append(str(itemid.iditem))
+        quantity.append(str(item['quantity']))
+        subtotal.append(str(item['subtotal']))
+        imageUrl.append(item['imageUrl'])
+    mna_str = ','.join(mna)
+    id_item_str = ','.join(id_item)
+    subtotal_str = ','.join(subtotal)
+    quantity_str = ','.join(quantity)
+    max_idorder = db.session.query(func.max(Order.idorder)).scalar()
+    order = Order(
+        idorder=max_idorder+1,
+        iduser=uid, 
+        idmerchant=mna_str, 
+        iditem=id_item_str, 
+        ifecho=echo, 
+        price=subtotal_str, 
+        total=total,
+        item_num=quantity_str
+    )
+    db.session.add(order)
+    db.session.commit()
+
+    response = jsonify({'message': '添加成功'})
+    response.status_code = 200
+    return response
 
 @app.errorhandler(404)
 def not_foundPage(error):

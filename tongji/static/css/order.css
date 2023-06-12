@@ -122,3 +122,15 @@ body {
   text-align: center;
   color: #b0b0b0;
 }
+#addProductButton {
+  background-color: #4CAF50; /* 设置背景颜色 */
+  color: white; /* 设置文字颜色 */
+  padding: 1px 20px; /* 设置内边距 */
+  border: none; /* 移除边框 */
+  cursor: pointer; /* 设置鼠标悬停样式 */
+  border-radius: 4px; /* 设置圆角 */
+}
+
+#addProductButton:hover {
+  background-color: #5445a0; /* 设置鼠标悬停时的背景颜色 */
+}

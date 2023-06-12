@@ -438,8 +438,9 @@ a:hover {
   padding: 20px;
   border-radius: 5px;
   max-width: 1200px; /* 调整弹窗的最大宽度 */
-  width: 800px;
-  height: 400px;
+  width: 1200px;
+  height: 600px;
+  overflow: auto
 }
 
 .popup h3 {

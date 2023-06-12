@@ -5,8 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的购物车</title>
+    <link rel="shortcut icon" href="image/zhihui.ico" type="image/x-icon">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/cart.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.css">
     <script src="{{ url_for('static', filename='js/ajax.js') }}"></script>
     <script src="{{ url_for('static', filename='js/cart.js') }}"></script>
 </head>
@@ -119,6 +121,8 @@
                         <span class="total-price">合计：<em>89</em>元
                             <a href="javascript:void(0);" class="btn"  onclick="showPopup()">去结算</a>
                         </span>
+                        <div id="hidden-data" style="display: none;">{{ mer_inf | tojson }}</div>
+                        <div id="hidden-data-uname" style="display: none;">{{user.name | tojson}}</div>
                     </div>
                 </div>
             </div>
@@ -128,7 +132,8 @@
                 <h3>结算信息</h3>
                 <div id="selected-items"></div>
                 <p>总金额: <span id="total-amount"></span>元</p>
-                <button onclick="closePopup()">关闭</button>
+                <button onclick="closePopup()">确认付款</button>
+                <button onclick="closePopup1()">稍后付款</button>   
             </div>
         </div>
 

@@ -60,8 +60,6 @@ function del(e) {
 
 
 
-
-
 function minus(e) {
     e = e.target;
     let v = e.parentNode.children[1]
@@ -129,7 +127,17 @@ function logout() {
         }
     })
 }
-
+var username;
+var mername;
+//var dataToPass = {};
+var orderData = {
+    uName: '',
+    mName: [],
+    items: [],
+    totalprice: '',
+    echo:''
+  };
+  
 function showPopup() {
     // 获取选中的商品信息和总金额
     var selectedItems = document.querySelectorAll('.cart-item input[type="checkbox"]:checked');
@@ -137,6 +145,21 @@ function showPopup() {
 
     // 构建弹窗内容
     var popupContent = '<ul>';
+    var hiddenDataElement = document.getElementById('hidden-data-uname');
+    var uName = JSON.parse(hiddenDataElement.textContent);
+
+    popupContent+='<li>顾客：  '+uName+'</li>'
+    var hiddenDataElement = document.getElementById('hidden-data');
+    var mName = JSON.parse(hiddenDataElement.textContent);
+    popupContent+='<li>商家：  ';
+    for (var i=0;i<mName.length;i++){
+        popupContent+=mName[i]+"   ";
+    }
+    orderData.uName = uName;
+    orderData.mName = mName;
+
+    popupContent+='</li>';
+  
     for (var i = 0; i < selectedItems.length; i++) {
         var item = selectedItems[i].closest('.cart-item');
         var name = item.querySelector('.name').textContent;
@@ -144,20 +167,66 @@ function showPopup() {
         var quantity = parseInt(item.querySelector('.num').value);
         var subtotal = price * quantity;
         var imageUrl = item.querySelector('.col-img img').src;
-
-        popupContent += '<li><img src="' + imageUrl + '"> ' + name + ' x ' + quantity + ' = ' + subtotal + '元</li>';
-
+        popupContent += '<li><img src="' + imageUrl + '"> &#12288;&#12288;' + name + '      x ' + quantity + ' &#12288;&#12288;&#12288;' + subtotal + '元</li>';
         totalAmount += subtotal;
+        orderData.items.push({
+            name: name,
+            quantity: quantity,
+            subtotal: subtotal,
+            imageUrl: imageUrl
+          });
     }
     popupContent += '</ul>';
-
     // 显示弹窗
     document.getElementById('selected-items').innerHTML = popupContent;
     document.getElementById('total-amount').textContent = totalAmount;
+    orderData.totalprice = totalAmount;
     document.querySelector('.overlay').style.display = 'flex';
 }
 
 function closePopup() {
-    // 关闭弹窗
-    document.querySelector('.overlay').style.display = 'none';
+    
+    // 发送数据到后端
+    orderData.echo = '0'
+    fetch('/generate_order', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderData)
+    })
+        .then(function(response) {
+        // 处理响应
+        })
+        .catch(function(error) {
+        // 处理错误
+        });
+    document.querySelector('.overlay').style.display = 'none';    
+}
+function closePopup1() {
+    orderData.echo = '1'
+    // 发送数据到后端
+    fetch('/generate_order', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderData)
+    })
+        .then(function(response) {
+        // 处理响应
+        Swal.fire({
+            icon: 'success',
+            title: '添加成功',
+            showConfirmButton: false,
+            timer: 1000 // 2秒后自动关闭弹窗
+          }).then(() => {
+            // 2秒后返回到manager_product.html页面
+            window.location.href = 'templates/manager_product.html';
+          });
+        })
+        .catch(function(error) {
+        // 处理错误
+        });
+    document.querySelector('.overlay').style.display = 'none';    
 }
