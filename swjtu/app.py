@@ -253,7 +253,15 @@ def order():
 
     return render_template('order.html', user=user, orders=orders,image_list=image_list)
 
-
+@app.route('/displayall')
+def displayall():
+    user = db.session.get(User, session['iduser'])
+    user_name = user.name if user is not None else None
+    user = User.query.filter_by(name=user_name).first()
+    #merchants = Merchant.query.filter_by(id=user.iduser).all()
+    items = Item.query.all()
+    print(items)
+    return render_template('displayall.html', user=user, items=items)
 @app.route('/manager_product')
 def manager_product():
     user = db.session.get(User, session['iduser'])

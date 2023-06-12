@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>全部商品</title>
+  <link rel="shortcut icon" href="image/zhihui.ico" type="image/x-icon">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/span.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/cart.css') }}">
+  <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/cart.js') }}"></script>
+</head>
+<body>
+  <div id="app">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+<script src="{{ url_for('static', filename='js/ajax.js') }}"></script>
+<script src="{{ url_for('static', filename='js/header.js') }}"></script>
+<div class="home-header">
+    <!-- 全局导航(长条) -->
+    <div class="site-topbar">
+       <div class="container clearfix">
+          <!-- 左侧导航 -->
+          <div class="topbar-nav">
+             <a href="{{ url_for('index') }}">swjtu电商平台</a>
+             <span class="sep">|</span>
+             <a href="{{ url_for('cart') }}">购物车</a>
+             <span class="sep">|</span>
+             <a href="{{ url_for('order') }}">我的订单</a>
+             <span class="sep">|</span>
+             <a href="https://www.swjtu.edu.cn">swjtu</a>
+             <span class="sep">|</span>
+             <a href="http://jwc.swjtu.edu.cn/index.html">swjtu教务</a>
+             <span class="sep">|</span>
+          </div>
+          <div class="topbar-cart">
+             <!-- 购物车按钮 -->
+             <a class="cart-mini" href="{{ url_for('cart') }}">
+                <em class="icon-cart"></em>
+                购物车
+                <span class="cart-num">（{{ user.cartcount }}）</span>
+             </a>
+          </div>
+          <!-- 右侧个人信息 -->
+          <div class="topbar-info">
+             {% if user %}
+             <a href="{{ url_for('center') }}">{{user.name}}</a>
+             <span class="sep">|</span>
+             <a href="{{ url_for('order') }}">我的订单</a>
+             <span class="sep">|</span>
+             <a href="javascript:void(0);" onclick="logout()">退出登录</a>
+             {% if user.auth == 2 %}
+             <span class="sep">|</span>
+             <a href="{{ url_for('manager_product') }}">商品管理</a>
+             {% endif %}
+             {% else %}
+             <a href="{{ url_for('login') }}">登录</a>
+             <span class="sep">|</span>
+             <a href="{{ url_for('register') }}">注册</a>
+             {% endif %}
+          </div>
+       </div>
+    </div>
+    <div class="cart-main">
+        <div class="container">
+           <div class="cart-list">
+              <div class="list-head clearfix">
+                 <div class="col col-check"></div>
+                 <div class="col col-img">&nbsp;</div>
+                 <div class="col col-name">商品名</div>
+                 <div class="col col-price">金额</div>
+                 <div class="col col-num">描述</div>
+
+              </div>
+              <div class="list-body">
+                 {% for item in items %}
+                 <div class="cart-item-warp">
+                    <div class="cart-item clearfix">
+                       <div class="col col-check">
+                       </div>
+                       <a href="{{ url_for('product') + '/%d' % item.iditem }}">
+                       <div class="col col-img"><img
+                             src="{{ url_for('static', filename='image/'+item.image) }}" height="80"
+                             width="80"></div></a>
+                       <div class="col col-name">
+                          <h3 class="name">{{item.name}}</h3>
+                       </div>
+                       <div class="col col-price"><span>{{item.price}}</span>元</div>
+                       <div class="col col-num"><span>{{item.desc}}</span></div>
+                    </div>
+                 </div>
+                 {% endfor %}
+              </div>
+              <div class="space"></div>
+
+           </div>
+        </div>
+     </div>

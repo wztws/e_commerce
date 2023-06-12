@@ -112,42 +112,44 @@
       </div>
       <div class="cart-main">
          <div class="container">
-      <div class="cart-list">
-         <div class="list-head clearfix">
-             <div class="col col-check">
-                 <input class="check-box" type="checkbox" onchange="recheck(event)"
-                     onclick="selall(event.target.checked)">全选</div>
-             <div class="col col-img">&nbsp;</div>
-             <div class="col col-name">订单号</div>
-             <div class="col col-price">总金额</div>
-             <div class="col col-num">时间</div>
-             <div class="col col-action">操作</div>
-         </div>
-         <div class="list-body">
-             {% for order in orders %}
-             <div class="cart-item-warp">
-                 <div class="cart-item clearfix">
-                     <div class="col col-check"><input class="check-box" type="checkbox" 
-                             onchange="recheck(event)"></div>
-                     <div class="col col-img"><img src="{{ url_for('static', filename='image/'+image_list[loop.index0]) }}" height="80"
-                                                   width="80"></div>
-                     <div class="col col-name">
-                         <h3 class="name">{{order.idorder}}</h3> 
+            <div class="cart-list">
+               <div class="list-head clearfix">
+                  <div class="col col-check">
+                     <input class="check-box" type="checkbox" onchange="recheck(event)"
+                        onclick="selall(event.target.checked)">全选
+                  </div>
+                  <div class="col col-img">&nbsp;</div>
+                  <div class="col col-name">订单号</div>
+                  <div class="col col-price">总金额</div>
+                  <div class="col col-num">时间</div>
+                  <div class="col col-action">操作</div>
+               </div>
+               <div class="list-body">
+                  {% for order in orders %}
+                  <div class="cart-item-warp">
+                     <div class="cart-item clearfix">
+                        <div class="col col-check"><input class="check-box" type="checkbox" onchange="recheck(event)">
+                        </div>
+                        <div class="col col-img"><img
+                              src="{{ url_for('static', filename='image/'+image_list[loop.index0]) }}" height="80"
+                              width="80"></div>
+                        <div class="col col-name">
+                           <h3 class="name">{{order.idorder}}</h3>
+                        </div>
+                        <div class="col col-price"><span>{{order.total}}</span>元</div>
+                        <div class="col col-num"><span>{{order.time}}</span></div>
+                        <div class="col col-action">
+                           <button id="addProductButton" onclick="examine()">详情</button>
+                        </div>
                      </div>
-                     <div class="col col-price"><span>{{order.total}}</span>元</div>
-                     <div class="col col-num"><span>{{order.time}}</span></div>
-                     <div class="col col-action">
-                        <button id="addProductButton" onclick="examine()">详情</button> 
-                     </div>
-                 </div>
-             </div>
-             {% endfor %}
-         </div>
-         <div class="space"></div>
+                  </div>
+                  {% endfor %}
+               </div>
+               <div class="space"></div>
 
-     </div>
+            </div>
          </div>
-         </div>     
+      </div>
 
 
       <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
