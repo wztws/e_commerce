@@ -134,3 +134,27 @@ body {
 #addProductButton:hover {
   background-color: #5445a0; /* 设置鼠标悬停时的背景颜色 */
 }
+#addProductButton1 {
+  background-color: #4CAF50; /* 设置背景颜色 */
+  color: white; /* 设置文字颜色 */
+  padding: 1px 20px; /* 设置内边距 */
+  border: none; /* 移除边框 */
+  cursor: pointer; /* 设置鼠标悬停样式 */
+  border-radius: 4px; /* 设置圆角 */
+}
+
+#addProductButton1:hover {
+  background-color: #5445a0; /* 设置鼠标悬停时的背景颜色 */
+}
+
+.item-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.item-row img {
+  margin-left: 10px;
+  width: 100px; /* 根据需要调整图片的宽度 */
+  height: auto; /* 自动计算图片的高度，保持比例 */
+}

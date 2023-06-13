@@ -149,8 +149,10 @@
                               <div class="col col-price"><span>{{order.total}}</span>元</div>
                               <div class="col col-num"><span>{{order.time}}</span></div>
                               <div class="col col-action">
-                                 <button id="addProductButton" onclick="examine()">详情</button>
+                                 <button id="addProductButton" onclick="examine()" data-order-id="{{ order.idorder }}">详情</button>
+                           
                               </div>
+                              
                            </div>
                         </div>
                         {% endfor %}
@@ -168,6 +170,7 @@
                         <div class="col col-price">总金额</div>
                         <div class="col col-num">时间</div>
                         <div class="col col-action">操作</div>
+                       
                      </div>
                      <div class="list-body">
                         {% for order in orders2 %}
@@ -184,9 +187,11 @@
                               </div>
                               <div class="col col-price"><span>{{order.total}}</span>元</div>
                               <div class="col col-num"><span>{{order.time}}</span></div>
+                              
                               <div class="col col-action">
-                                 <button id="addProductButton" onclick="examine()">详情</button>
+                                 <button id="addProductButton" onclick="examine()" data-order-id="{{ order.idorder }}">详情</button>
                               </div>
+                             
                            </div>
                         </div>
                         {% endfor %}
@@ -255,8 +260,17 @@
                         area3.style.display = "block";
                      });
                   </script>
-
-
+                  <div class="overlay" id="overlay">
+                     <div class="popup">
+                         <h3>订单信息</h3>
+                         <div id="selected-items"></div>
+                         <p>总金额: <span id="total-amount"></span>元</p>
+                         <p>时间：<span id="creatime"></span></p>
+                         <button onclick="closeP()">关闭</button>
+                         <button onclick="closeP()">确认收货</button>   
+                     </div>
+                 </div>
+                  
                </div>
             </div>
 

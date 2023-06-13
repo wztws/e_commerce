@@ -253,25 +253,48 @@ def order():
         image_list1.append(iditem.image)
     
     orders2 = Order.query.filter(Order.iduser==user['iduser'],Order.ifecho==0).all()
-    id_list = []  # 创建一个空列表用于存储拆分后的 id
+    id_list2 = []  # 创建一个空列表用于存储拆分后的 id
     image_list2=[]
     for order in orders2:
         id_items = order.iditem.split(',')  # 使用逗号拆分字符串
         last_id = id_items[-1]  # 获取列表末尾元素
-        id_list.extend(id_items)  # 将拆分后的 id 添加到列表中
+        id_list2.extend(id_items)  # 将拆分后的 id 添加到列表中
         iditem = Item.query.filter(Item.iditem==last_id).first()
         image_list2.append(iditem.image)
     print(image_list2)  # 打印 id 列表
+    return render_template('order.html', id_list1=id_list1,id_list2=id_list2,user=user, orders1=orders1,image_list1=image_list1,  orders2=orders2, image_list2=image_list2)
+@app.route('/order-details')
+def order_details():
+    order_id = request.args.get('id')  # 获取订单ID参数
+    # 查询订单详情
+    order = Order.query.filter(Order.idorder==order_id).first()
+    id_list1 = order.iditem.split(',')
+    numlist = order.item_num.split(',')
+    #遍历id_list1
+    img=[]
+    namelist=[]
+    for i in range(len(id_list1)):
+        item = Item.query.filter(Item.iditem==id_list1[i]).first()
+        img.append(item.image)
+        namelist.append(item.name)
+    img=json.dumps(img)
+    # 构造订单详情对象
+    order_details = {
+        'items': namelist,
+        'totalAmount': order.total,
+        'times':order.time,
+        'img':img,
+        'num':numlist
+    }
 
-
-    return render_template('order.html', user=user, orders1=orders1,image_list1=image_list1,  orders2=orders2, image_list2=image_list2)
+    return jsonify(order_details)
 
 @app.route('/displayall')
 def displayall():
     user = db.session.get(User, session['iduser'])
     user_name = user.name if user is not None else None
     user = User.query.filter_by(name=user_name).first()
-    #merchants = Merchant.query.filter_by(id=user.iduser).all()
+
     items = Item.query.all()
     print(items)
     return render_template('displayall.html', user=user, items=items)
