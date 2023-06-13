@@ -81,9 +81,31 @@
                   <h1 class="title">我的订单</h1>
                   <div class="filter clearfix">
                      <ul class="filter-list">
-                        <li class="first active"><a href="javascript:void(0);">全部有效订单</a></li>
-                        <li class=""><a href="javascript:void(0);">待支付</a></li>
-                        <li class=""><a href="javascript:void(0);">待收货</a></li>
+                        <li class=""><a href="javascript:void(0);"  class="filter-link" id="order1-link">待支付订单</a></li>
+                        <li class=""><a href="javascript:void(0);"  class="filter-link" id="order2-link">待收货</a></li>
+                        <li class=""><a href="javascript:void(0);"  class="filter-link" id="order3-link">确认收货</a></li>
+                        <style>
+                           .active {
+                              background-color: #f7f4f4; /* 设置选中的背景颜色 */
+                              color: #e41414; /* 设置选中的文字颜色 */
+                           }
+                        </style>
+                        <script>
+                           // 获取链接的元素
+                           var links = document.getElementsByClassName("filter-link");
+                        
+                           // 定义点击链接的事件处理函数
+                           for (var i = 0; i < links.length; i++) {
+                              links[i].addEventListener("click", function() {
+                                 // 移除所有链接的 active 类名
+                                 for (var j = 0; j < links.length; j++) {
+                                    links[j].classList.remove("active");
+                                 }
+                                 // 为当前点击的链接添加 active 类名
+                                 this.classList.add("active");
+                              });
+                           }
+                        </script>                                             
                      </ul>
                      <div class="filter-search clearfix">
                         <input class="search-text" type="search" placeholder="输入商品名称、订单号">
@@ -98,58 +120,151 @@
                      </div>
                   </div>
                </div>
-               <!--div class="box-body">
-                  <div>
-                     <ul class="order-list">
-                        <p class="empty">当前没有交易订单。</p>
-                     </ul>
-                     
-                  </div>
-               </div-->
-            </div>
-
-         </div>
-      </div>
-      <div class="cart-main">
-         <div class="container">
-            <div class="cart-list">
-               <div class="list-head clearfix">
-                  <div class="col col-check">
-                     <input class="check-box" type="checkbox" onchange="recheck(event)"
-                        onclick="selall(event.target.checked)">全选
-                  </div>
-                  <div class="col col-img">&nbsp;</div>
-                  <div class="col col-name">订单号</div>
-                  <div class="col col-price">总金额</div>
-                  <div class="col col-num">时间</div>
-                  <div class="col col-action">操作</div>
-               </div>
-               <div class="list-body">
-                  {% for order in orders %}
-                  <div class="cart-item-warp">
-                     <div class="cart-item clearfix">
-                        <div class="col col-check"><input class="check-box" type="checkbox" onchange="recheck(event)">
+               <div class="box-body">
+                  <div id="order1" class="cart-list">
+                     <div class="list-head clearfix">
+                        <div class="col col-check">
+                           <input class="check-box" type="checkbox" onchange="recheck(event)"
+                              onclick="selall(event.target.checked)">全选
                         </div>
-                        <div class="col col-img"><img
-                              src="{{ url_for('static', filename='image/'+image_list[loop.index0]) }}" height="80"
-                              width="80"></div>
-                        <div class="col col-name">
-                           <h3 class="name">{{order.idorder}}</h3>
-                        </div>
-                        <div class="col col-price"><span>{{order.total}}</span>元</div>
-                        <div class="col col-num"><span>{{order.time}}</span></div>
-                        <div class="col col-action">
-                           <button id="addProductButton" onclick="examine()">详情</button>
-                        </div>
+                        <div class="col col-img">&nbsp;</div>
+                        <div class="col col-name">订单号</div>
+                        <div class="col col-price">总金额</div>
+                        <div class="col col-num">时间</div>
+                        <div class="col col-action">操作</div>
                      </div>
+                     <div class="list-body">
+                        {% for order in orders1 %}
+                        <div class="cart-item-warp">
+                           <div class="cart-item clearfix">
+                              <div class="col col-check"><input class="check-box" type="checkbox"
+                                    onchange="recheck(event)">
+                              </div>
+                              <div class="col col-img"><img
+                                    src="{{ url_for('static', filename='image/'+image_list1[loop.index0]) }}" height="80"
+                                    width="80"></div>
+                              <div class="col col-name">
+                                 <h3 class="name">{{order.idorder}}</h3>
+                              </div>
+                              <div class="col col-price"><span>{{order.total}}</span>元</div>
+                              <div class="col col-num"><span>{{order.time}}</span></div>
+                              <div class="col col-action">
+                                 <button id="addProductButton" onclick="examine()">详情</button>
+                              </div>
+                           </div>
+                        </div>
+                        {% endfor %}
+                     </div>
+                     <div class="space"></div>
                   </div>
-                  {% endfor %}
-               </div>
-               <div class="space"></div>
+                  <div id="order2" class="cart-list" style="display: none;">
+                     <div class="list-head clearfix">
+                        <div class="col col-check">
+                           <input class="check-box" type="checkbox" onchange="recheck(event)"
+                              onclick="selall(event.target.checked)">全选
+                        </div>
+                        <div class="col col-img">&nbsp;</div>
+                        <div class="col col-name">订单号</div>
+                        <div class="col col-price">总金额</div>
+                        <div class="col col-num">时间</div>
+                        <div class="col col-action">操作</div>
+                     </div>
+                     <div class="list-body">
+                        {% for order in orders2 %}
+                        <div class="cart-item-warp">
+                           <div class="cart-item clearfix">
+                              <div class="col col-check"><input class="check-box" type="checkbox"
+                                    onchange="recheck(event)">
+                              </div>
+                              <div class="col col-img"><img
+                                    src="{{ url_for('static', filename='image/'+image_list2[loop.index0]) }}" height="80"
+                                    width="80"></div>
+                              <div class="col col-name">
+                                 <h3 class="name">{{order.idorder}}</h3>
+                              </div>
+                              <div class="col col-price"><span>{{order.total}}</span>元</div>
+                              <div class="col col-num"><span>{{order.time}}</span></div>
+                              <div class="col col-action">
+                                 <button id="addProductButton" onclick="examine()">详情</button>
+                              </div>
+                           </div>
+                        </div>
+                        {% endfor %}
+                     </div>
+                     <div class="space"></div>
+                  </div>
+                  <div id="order3" class="cart-list" style="display: none;">
+                     <div class="list-head clearfix">
+                        <div class="col col-check">
+                           <input class="check-box" type="checkbox" onchange="recheck(event)"
+                              onclick="selall(event.target.checked)">全选
+                        </div>
+                        <div class="col col-img">&nbsp;</div>
+                        <div class="col col-name">订单号</div>
+                        <div class="col col-price">总金额</div>
+                        <div class="col col-num">时间</div>
+                        <div class="col col-action">操作</div>
+                     </div>
+                     <div class="list-body">
+                        {% for order in orders1 %}
+                        <div class="cart-item-warp">
+                           <div class="cart-item clearfix">
+                              <div class="col col-check"><input class="check-box" type="checkbox"
+                                    onchange="recheck(event)">
+                              </div>
+                              <div class="col col-img"><img
+                                    src="{{ url_for('static', filename='image/'+image_list1[loop.index0]) }}" height="80"
+                                    width="80"></div>
+                              <div class="col col-name">
+                                 <h3 class="name">{{order.idorder}}</h3>
+                              </div>
+                              <div class="col col-price"><span>{{order.total}}</span>元</div>
+                              <div class="col col-num"><span>{{order.time}}</span></div>
+                              <div class="col col-action">
+                                 <button id="addProductButton" onclick="examine()">详情</button>
+                              </div>
+                           </div>
+                        </div>
+                        {% endfor %}
+                     </div>
+                     <div class="space"></div>
+                  </div>
+                  <script>
+                     // 获取链接和区域的元素
+                     var link1 = document.getElementById("order1-link");
+                     var link2 = document.getElementById("order2-link");
+                     var link3 = document.getElementById("order3-link");
+                     var area1 = document.getElementById("order1");
+                     var area2 = document.getElementById("order2");
+                     var area3 = document.getElementById("order3");
 
+                     // 定义点击链接的事件处理函数
+                     link1.addEventListener("click", function() {
+                        area1.style.display = "block";
+                        area2.style.display = "none";
+                        area3.style.display = "none";
+                     });
+                     link2.addEventListener("click", function() {
+                        area1.style.display = "none";
+                        area2.style.display = "block";
+                        area3.style.display = "none";
+                     });
+                     link3.addEventListener("click", function() {
+                        area1.style.display = "none";
+                        area2.style.display = "none";
+                        area3.style.display = "block";
+                     });
+                  </script>
+
+
+               </div>
             </div>
+
          </div>
       </div>
+
+
+      <!--生成弹窗-->
 
 
       <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
