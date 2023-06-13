@@ -52,7 +52,7 @@
           <!-- 右侧个人信息 -->
           <div class="topbar-info">
              {% if user %}
-             <a href="{{ url_for('cart') }}">{{user.name}}</a>
+             <a href="{{ url_for('center') }}">{{user.name}}</a>
              <span class="sep">|</span>
              <a href="{{ url_for('order') }}">我的订单</a>
              <span class="sep">|</span>
@@ -111,22 +111,22 @@
         <div class="preview-container">
             <div class="upload-container" onclick="document.querySelector('#file-input1').click()">
               <input  class="hide-input" id="file-input1" type="file" name="image1" onchange="previewImage(this, 'preview1')">
-              <img id="preview1" src="" alt="上传商品图片">
+              <img id="preview1" src="" alt="上传商品展示图片1">
             </div>
           
             <div class="upload-container" onclick="document.querySelector('#file-input2').click()">
               <input  class="hide-input"  id="file-input2" type="file" name="image2" onchange="previewImage(this, 'preview2')">
-              <img id="preview2" src="" alt="上传商品图片">
+              <img id="preview2" src="" alt="上传商品展示图片2">
             </div>
           
             <div class="upload-container" onclick="document.querySelector('#file-input3').click()">
               <input  class="hide-input"  id="file-input3" type="file" name="image3" onchange="previewImage(this, 'preview3')">
-              <img id="preview3" src="" alt="上传商品图片">
+              <img id="preview3" src="" alt="上传商品展示图片3">
             </div>
 
             <div class="upload-container" onclick="document.querySelector('#file-input4').click()">
               <input  class="hide-input"  id="file-input4" type="file" name="image4" onchange="previewImage(this, 'preview4')">
-              <img id="preview4" src="" alt="上传商品图片">
+              <img id="preview4" src="" alt="上传商品展示图片4">
             </div>
 
           </div>

@@ -147,10 +147,10 @@ def index():
               {'href': "product.html", 'url': url_for('static', filename="image/banner/宣传图4.jpg")},
               {'href': "product.html", 'url': url_for('static', filename="image/banner/宣传图5.jpg")}]
 
-    list1 = Item.query.limit(12).all()
+    list1 = Item.query.limit(8).all()
    # print(list1)
 
-    list2 = Item.query.offset(13).limit(16).all()
+    list2 = Item.query.offset(9).limit(10).all()
 
     headerlist = [[Item.query.offset(random.randint(0, 13)).limit(random.randint(3, 6)).all()
                    for col in range(random.randint(2, 4))] for i in range(7)]
@@ -307,8 +307,12 @@ def define():
     print(order_id)
     #在表Order中搜索order_id对应的数据
     order = Order.query.filter(Order.idorder==order_id).first()
+    #如果order.ifecho==0，且当前系统时间减去order.time大于24小时，将其该数据从Order中删除
+    if order.ifecho==0 and (datetime.datetime.now()-order.time).seconds>86400:
+        db.session.delete(order)
+        db.session.commit()
     #如果order.ifecho==0,将其ifecho=1
-    if order.ifecho==0:
+    if order.ifecho==0 and (datetime.datetime.now()-order.time).seconds<86400:
         order.ifecho=1
         db.session.commit()
     #否则如果order.ifecho==1,将其ifecho=2
@@ -589,12 +593,16 @@ def center():
         return redirect(url_for('login', src=request.url))
     user = User.query.get(session['iduser']).header()
     carts = Cart.query.join(User).filter(User.name == user['name']).all()
-    print("用户id: "+str(user))
     total_price = 0
     for cart in carts:
         total_price += cart.item.price * cart.count
     print(user)
-    return render_template('center.html',user=user)
+    #在Merchant表中查找id等于user.iduser的所有记录
+    
+    merchants=Merchant.query.filter(Merchant.id==user['iduser']).all()
+    print(merchants)
+    print(carts)
+    return render_template('center.html',user=user, merchants=merchants)
 
 
 # 获取指定时间范围内的消费金额和类别信息
