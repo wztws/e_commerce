@@ -240,7 +240,7 @@ def order():
         return redirect(url_for('login', src=request.url))
     user = User.query.get(session['iduser']).header()
     # 在Order表中查找所有(Order.iduser==user['iduser']且echo为1的数据存入order1中
-    orders1 = Order.query.filter(Order.iduser==user['iduser'],Order.ifecho==1).all()
+    orders1 = Order.query.filter(Order.iduser==user['iduser'],Order.ifecho==0).all()
     id_list1 = []  # 创建一个空列表用于存储拆分后的 id
     image_list1 = []
     for order in orders1:
@@ -252,7 +252,7 @@ def order():
         iditem = Item.query.filter(Item.iditem==last_id).first()
         image_list1.append(iditem.image)
     
-    orders2 = Order.query.filter(Order.iduser==user['iduser'],Order.ifecho==0).all()
+    orders2 = Order.query.filter(Order.iduser==user['iduser'],Order.ifecho==1).all()
     id_list2 = []  # 创建一个空列表用于存储拆分后的 id
     image_list2=[]
     for order in orders2:
@@ -261,8 +261,19 @@ def order():
         id_list2.extend(id_items)  # 将拆分后的 id 添加到列表中
         iditem = Item.query.filter(Item.iditem==last_id).first()
         image_list2.append(iditem.image)
-    print(image_list2)  # 打印 id 列表
-    return render_template('order.html', id_list1=id_list1,id_list2=id_list2,user=user, orders1=orders1,image_list1=image_list1,  orders2=orders2, image_list2=image_list2)
+
+
+    orders3 = Order.query.filter(Order.iduser==user['iduser'],Order.ifecho==2).all()
+    id_list3=[]
+    image_list3=[]
+    for order in orders3:
+        id_items = order.iditem.split(',')  # 使用逗号拆分字符中
+        last_id = id_items[-1]  # 获取列表末尰元素
+        id_list3.extend(id_items)  # 将拆分后的 id 添加到列表中
+        iditem = Item.query.filter(Item.iditem==last_id).first()
+        image_list3.append(iditem.image)
+    return render_template('order.html', id_list1=id_list1,id_list2=id_list2,user=user, orders1=orders1,image_list1=image_list1,  orders2=orders2, image_list2=image_list2, orders3=orders3,image_list3=image_list3)
+
 @app.route('/order-details')
 def order_details():
     order_id = request.args.get('id')  # 获取订单ID参数
@@ -288,6 +299,25 @@ def order_details():
     }
 
     return jsonify(order_details)
+
+@app.route('/define', methods=['POST'])
+def define():
+    data = request.json
+    order_id = data['orderId']
+    print(order_id)
+    #在表Order中搜索order_id对应的数据
+    order = Order.query.filter(Order.idorder==order_id).first()
+    #如果order.ifecho==0,将其ifecho=1
+    if order.ifecho==0:
+        order.ifecho=1
+        db.session.commit()
+    #否则如果order.ifecho==1,将其ifecho=2
+    elif order.ifecho==1:
+        order.ifecho=2
+        db.session.commit()
+    #刷新前端界面
+
+    return 'Success'  # 返回请求成功的响应
 
 @app.route('/displayall')
 def displayall():

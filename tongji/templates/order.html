@@ -186,12 +186,10 @@
                                  <h3 class="name">{{order.idorder}}</h3>
                               </div>
                               <div class="col col-price"><span>{{order.total}}</span>元</div>
-                              <div class="col col-num"><span>{{order.time}}</span></div>
-                              
+                              <div class="col col-num"><span>{{order.time}}</span></div>                           
                               <div class="col col-action">
                                  <button id="addProductButton" onclick="examine()" data-order-id="{{ order.idorder }}">详情</button>
                               </div>
-                             
                            </div>
                         </div>
                         {% endfor %}
@@ -211,14 +209,14 @@
                         <div class="col col-action">操作</div>
                      </div>
                      <div class="list-body">
-                        {% for order in orders1 %}
+                        {% for order in orders3 %}
                         <div class="cart-item-warp">
                            <div class="cart-item clearfix">
                               <div class="col col-check"><input class="check-box" type="checkbox"
                                     onchange="recheck(event)">
                               </div>
                               <div class="col col-img"><img
-                                    src="{{ url_for('static', filename='image/'+image_list1[loop.index0]) }}" height="80"
+                                    src="{{ url_for('static', filename='image/'+image_list3[loop.index0]) }}" height="80"
                                     width="80"></div>
                               <div class="col col-name">
                                  <h3 class="name">{{order.idorder}}</h3>
@@ -226,7 +224,7 @@
                               <div class="col col-price"><span>{{order.total}}</span>元</div>
                               <div class="col col-num"><span>{{order.time}}</span></div>
                               <div class="col col-action">
-                                 <button id="addProductButton" onclick="examine()">详情</button>
+                                 <button id="addProductButton" onclick="examine()" data-order-id="{{ order.idorder }}">详情</button>
                               </div>
                            </div>
                         </div>
@@ -266,8 +264,8 @@
                          <div id="selected-items"></div>
                          <p>总金额: <span id="total-amount"></span>元</p>
                          <p>时间：<span id="creatime"></span></p>
-                         <button onclick="closeP()">关闭</button>
-                         <button onclick="closeP()">确认收货</button>   
+                         <button onclick="closeP1()">关闭</button>
+                         <button onclick="closeP()">确认支付/收货</button>   
                      </div>
                  </div>
                   

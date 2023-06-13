@@ -1,7 +1,8 @@
+var selectedOrderId;
 function examine() {
     // 获取按钮的ID
     var orderId = event.target.getAttribute('data-order-id');
-
+    selectedOrderId=event.target.getAttribute('data-order-id');
     // 发送AJAX请求到后端，获取订单信息
     var xhr = new XMLHttpRequest();
     xhr.open('GET', '/order-details?id=' + orderId, true);
@@ -52,6 +53,29 @@ function examine() {
  }
 
  function closeP() {
-    // 关闭弹窗
+   // 关闭弹窗
+
+   // 发送AJAX请求到后端
+   
+   var xhr = new XMLHttpRequest();
+   xhr.open('POST', '/define', true);
+   xhr.setRequestHeader('Content-Type', 'application/json');
+
+   xhr.onreadystatechange = function() {
+       if (xhr.readyState === 4 && xhr.status === 200) {
+           // 请求成功,刷新界面
+           window.location.reload();
+       }
+   };
+
+   var data = {
+       orderId: selectedOrderId
+   };
+
+   xhr.send(JSON.stringify(data));
+
+   document.getElementById('overlay').style.display = 'none';
+}
+function closeP1() { 
     document.getElementById('overlay').style.display = 'none';
  }
