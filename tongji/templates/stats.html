@@ -9,14 +9,14 @@
 <body>
 	<h1>消费统计</h1>
 	<label for="start">起始时间:</label>
-	<input type="date" id="start" name="start">
+	<input type="date" id="start" name="start" value="2022-01-01">
 	<label for="end">终止时间:</label>
-	<input type="date" id="end" name="end">
+	<input type="date" id="end" name="end" value="2023-12-31">
 	<label for="unit">统计单位:</label>
 	<select id="unit" name="unit">
 		<option value="day">天</option>
 		<option value="week">周</option>
-		<option value="month">月</option>
+		<option value="month" selected>月</option>
 		<option value="year">年</option>
 	</select>
 	<button onclick="getData()">获取数据</button>
@@ -27,7 +27,7 @@
 			var start = moment(document.getElementById('start').value).format('YYYY-MM-DD');
 			var end = moment(document.getElementById('end').value).format('YYYY-MM-DD');
 			var unit = document.getElementById('unit').value;
-			axios.get('/data', {
+			axios.get('/stats', {
 				params: {
 					start: start,
 					end: end,
@@ -36,6 +36,7 @@
 			})
 			.then(function (response) {
 				var data = response.data;
+				console.log(data)
 				renderChart1(data.chart1);
 				renderChart2(data.chart2);
 			})

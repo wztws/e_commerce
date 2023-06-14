@@ -1,7 +1,7 @@
 import os
 import json
 import random
-from sqlalchemy import func, or_
+from sqlalchemy import and_, func, or_
 from datetime import datetime, timedelta
 from flask import Flask, request, render_template, session, redirect, url_for, make_response, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -11,7 +11,7 @@ from collections import defaultdict
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'w522328z'  # 设置session加密的密钥
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=2)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:w522328z@localhost:3306/webhw'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@localhost:3306/webhw'
 db = SQLAlchemy(app)
 class User(db.Model):
     __tablename__ = 'user'
@@ -67,6 +67,7 @@ class Merchant(db.Model):
         self.price = price
         self.desc = desc
         self.name = name
+
 class Order(db.Model):
     __tablename__ = 'order'
     idorder = db.Column(db.Integer, autoincrement=True)
@@ -607,61 +608,128 @@ def center():
 
 # 获取指定时间范围内的消费金额和类别信息
 def get_data(start, end):
-    # 查询数据
-    transactions = db.session.query(Transaction.amount, Transaction.category, Transaction.date).\
-        filter(Transaction.date >= start, Transaction.date <= end).all()
+    try:
+        # 查询数据
+        print(start, end)
+        orders = Order.query.filter(Order.time >= start, Order.time <= end, Order.total.isnot(None)).all()
+        print(orders)
+        # 按照时间单位统计消费金额
+        unit = request.args.get('unit', 'day')
+        if unit == 'day':
+            date_format = '%Y-%m-%d'
+            delta = timedelta(days=1)
+        elif unit == 'week':
+            date_format = '%Y-%u'
+            delta = timedelta(weeks=1)
+        elif unit == 'month':
+            date_format = '%Y-%m'
+            delta = timedelta(days=30)
+        elif unit == 'year':
+            date_format = '%Y'
+            delta = timedelta(days=365)
+        else:
+            date_format = '%Y-%m-%d'
+            delta = timedelta(days=1)
 
-    # 按照时间单位统计消费金额
-    unit = request.args.get('unit', 'day')
-    if unit == 'day':
-        date_format = '%Y-%m-%d'
-        delta = timedelta(days=1)
-    elif unit == 'week':
-        date_format = '%Y-%u'
-        delta = timedelta(weeks=1)
-    elif unit == 'month':
-        date_format = '%Y-%m'
-        delta = timedelta(days=30)
-    elif unit == 'year':
-        date_format = '%Y'
-        delta = timedelta(days=365)
-    else:
-        date_format = '%Y-%m-%d'
-        delta = timedelta(days=1)
+        date_dict = defaultdict(int)
+        for row in orders:
+            date = datetime.strptime(row[2], '%Y-%m-%d %H:%M:%S.%f')
+            date_key = datetime.strftime(date, date_format)
+            date_dict[date_key] += row[0]
 
-    date_dict = defaultdict(int)
-    for row in transactions:
-        date = datetime.strptime(row[2], '%Y-%m-%d')
-        date_key = datetime.strftime(date, date_format)
-        date_dict[date_key] += row[0]
+        # 构造返回数据
+        chart1_categories = []
+        chart1_values = []
+        for key, value in sorted(date_dict.items()):
+            chart1_categories.append(key)
+            chart1_values.append(value)
 
-    # 构造返回数据
-    chart1_categories = []
-    chart1_values = []
-    for key, value in sorted(date_dict.items()):
-        chart1_categories.append(key)
-        chart1_values.append(value)
+        category_dict = defaultdict(int)
+        for row in orders:
+            category_dict[row[1]] += row[0]
 
-    category_dict = defaultdict(int)
-    for row in transactions:
-        category_dict[row[1]] += row[0]
+        chart2_data = []
+        for key, value in sorted(category_dict.items(), key=lambda x: x[1], reverse=True):
+            chart2_data.append({'name': key, 'value': value})
 
-    chart2_data = []
-    for key, value in sorted(category_dict.items(), key=lambda x: x[1], reverse=True):
-        chart2_data.append({'name': key, 'value': value})
+        # 关闭数据库连接
+        db.session.close()
 
-    # 关闭数据库连接
-    db.session.close()
-
-    return {'chart1': {'categories': chart1_categories, 'values': chart1_values}, 'chart2': chart2_data}
+        return {'chart1': {'categories': chart1_categories, 'values': chart1_values}, 'chart2': chart2_data}
+    except Exception as e:
+        # 处理异常
+        db.session.rollback()
+        return {'error': str(e)}
 
 # 返回数据接口
-@app.route('/stats')
+@app.route('/stats', methods=['GET','POST'])
 def stats():
-    start = request.args.get('start')
-    end = request.args.get('end')
-    data = get_data(start, end)
-    return jsonify(data)
+    if request.method == 'GET':
+        print(1)
+        start_date = None
+        end_date = None
+        start_date_str = request.args.get('start')
+        end_date_str = request.args.get('end')
+        unit = request.args.get('unit')
+        print(start_date_str, end_date_str, unit)
+        if start_date_str is not None and end_date_str is not None and unit is not None:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)
+            print(start_date, end_date)
+        if start_date is not None and end_date is not None:
+            # 根据用户身份选择相应的统计字段
+            dbuser = db.session.get(User, session['iduser'])
+
+            # 如果是用户
+            if dbuser.auth == 1:
+                amount_field = Order.total
+                user_field = Order.iduser
+                filter_field = Order.iduser
+            else:
+                amount_field = Order.total
+                user_field = Order.idmerchant
+                filter_field = Order.idmerchant
+
+            # 使用不同的日期时间格式化字符串
+            if unit == 'day':
+                date_format_str = '%Y-%m-%d'
+            elif unit == 'week':
+                date_format_str = '%x-%v'
+            elif unit == 'month':
+                date_format_str = '%Y-%m'
+            elif unit == 'year':
+                date_format_str = '%Y'
+            else:
+                return jsonify({'error': 'Invalid unit'})
+            
+            # 查询满足条件的订单数据并进行统计
+            result = db.session.query(
+                func.DATE_FORMAT(Order.time, date_format_str).label('date'),
+                func.sum(amount_field).label('total')
+            ).filter(
+                and_(
+                    #filter_field == dbuser.iduser,
+                    Order.ifecho != 0,
+                    #Order.time >= start_date,
+                    #Order.time < end_date
+                )
+            ).group_by('date').all()
+            print(result)
+            print(jsonify({
+                'chart1': {
+                    'categories': [str(row.date) for row in result],
+                    'values': [row.total for row in result],
+                }
+            }))
+
+            # 将查询结果转换为字典格式并返回给前端
+            return jsonify({
+                'chart1': {
+                    'categories': [str(row.date) for row in result],
+                    'values': [row.total for row in result],
+                }
+            })
+        return render_template('stats.html')
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
