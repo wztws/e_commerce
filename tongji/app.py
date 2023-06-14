@@ -9,7 +9,7 @@ import json
 from collections import defaultdict
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'w522328z'  # 设置session加密的密钥
+app.config['SECRET_KEY'] = '123456'  # 设置session加密的密钥
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=2)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:w522328z@localhost:3306/webhw'
 db = SQLAlchemy(app)
@@ -281,6 +281,8 @@ def order_details():
     order = Order.query.filter(Order.idorder==order_id).first()
     id_list1 = order.iditem.split(',')
     numlist = order.item_num.split(',')
+    pricelist = order.price.split(',')
+    print(pricelist)
     #遍历id_list1
     img=[]
     namelist=[]
@@ -295,7 +297,8 @@ def order_details():
         'totalAmount': order.total,
         'times':order.time,
         'img':img,
-        'num':numlist
+        'num':numlist,
+        'price':pricelist
     }
 
     return jsonify(order_details)
