@@ -43,6 +43,10 @@ function examine() {
             var priceElement = document.createElement('price');
             priceElement.textContent = orderDetails.price[i];
             listItem.appendChild(priceElement);
+           
+            var blankElement = document.createElement('span');
+            blankElement.textContent = '    元   ';
+            listItem.appendChild(blankElement);
             
             selectedItemsContainer.appendChild(listItem);
             
