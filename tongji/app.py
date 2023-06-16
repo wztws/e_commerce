@@ -11,7 +11,7 @@ from collections import defaultdict
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '123456'  # 设置session加密的密钥
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=2)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@localhost:3306/webhw'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:w522328z@localhost:3306/webhw'
 db = SQLAlchemy(app)
 class User(db.Model):
     __tablename__ = 'user'
@@ -147,7 +147,8 @@ def index():
         cartcount = Cart.query.filter(Cart.iduser == dbuser.iduser).count()
         user['cartcount'] = cartcount
         user['auth'] = dbuser.get_auth()
-
+    #在Order中搜索iduser与user['iduser']相同，同时ifecho==0的数据，，若time与当前时间差值超过24小时，从表中删除
+    
     slides = [{'href': "product.html", 'url': url_for('static', filename="image/banner/宣传图1.png")},
               {'href': "product.html", 'url': url_for('static', filename="image/banner/宣传图2.jpg")},
               {'href': "product.html", 'url': url_for('static', filename="image/banner/宣传图3.jpg")},
@@ -256,6 +257,7 @@ def order():
         return redirect(url_for('login', src=request.url))
     user = User.query.get(session['iduser']).header()
     # 在Order表中查找所有(Order.iduser==user['iduser']且echo为1的数据存入order1中
+  #  Order.query.filter(Order.iduser == user['iduser'], Order.ifecho == 0, Order.time - datetime.now() > timedelta(days=1)).delete()
     orders1 = Order.query.filter(Order.iduser==user['iduser'],Order.ifecho==0).all()
     id_list1 = []  # 创建一个空列表用于存储拆分后的 id
     image_list1 = []
@@ -327,11 +329,10 @@ def define():
     #在表Order中搜索order_id对应的数据
     order = Order.query.filter(Order.idorder==order_id).first()
     #如果order.ifecho==0，且当前系统时间减去order.time大于24小时，将其该数据从Order中删除
-    if order.ifecho==0 and (datetime.datetime.now()-order.time).seconds>86400:
-        db.session.delete(order)
-        db.session.commit()
+    print
+
     #如果order.ifecho==0,将其ifecho=1
-    if order.ifecho==0 and (datetime.datetime.now()-order.time).seconds<86400:
+    if order.ifecho==0:
         order.ifecho=1
         db.session.commit()
     #否则如果order.ifecho==1,将其ifecho=2
