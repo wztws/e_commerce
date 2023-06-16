@@ -125,6 +125,12 @@ class Cart(db.Model):
     item = db.relationship('Item', backref='carts')
     user = db.relationship('User', backref='carts')
 
+class Comment(db.Model):
+    __tablename__ = 'comments'
+    created_at = db.Column(db.DateTime, primary_key=True, default=datetime.now)
+    username = db.Column(db.String(255), nullable=False)
+    product_name = db.Column(db.String(255), nullable=False)
+    comment = db.Column(db.Text, nullable=False)
 
 with app.app_context():
     db.create_all()
@@ -170,6 +176,14 @@ def product(_id=0):
     if 'iduser' in session:
         user = User.query.get(session['iduser']).header()
     item = Item.query.filter(Item.iditem == _id).first()
+    com= Comment.query.filter(Comment.product_name==item.name).all()
+    """
+    print(com)
+    comments=[]
+    for comment in com:
+        comments.append(comment.comment)
+    print(comments)
+    """
    # print(item.iditem)
     mer = Merchant.query.filter(Merchant.iditem == item.iditem).first()
    # print(mer.iditem)
@@ -193,7 +207,8 @@ def product(_id=0):
                            product=product,
                            headerlist=headerlist,
                            user_name=user_name,
-                           user_address=useaddress)
+                           user_address=useaddress,
+                           comments=com)
 
 
 @app.route('/cart')
@@ -733,6 +748,49 @@ def stats():
                 }
             })
         return render_template('stats.html')
+
+@app.route('/api/comment', methods=['POST'])
+def add_comment():
+    data = request.json
+    comment = data['comment']
+    product_name = data['product_name']
+    # 将评论保存到数据库中
+    if 'iduser' in session:
+        #dbuser = User.query.get(session['iduser'])
+       # print(dbuser)
+        dbuser = db.session.get(User, session['iduser'])
+        username = dbuser.name
+    print(username)
+    print(product_name)
+    print(comment)
+    if not username or not product_name or not comment:
+        return redirect(url_for('comments'))
+    new_comment = Comment(username=username, product_name=product_name, comment=comment)
+    db.session.add(new_comment)
+    db.session.commit()
+    return redirect(url_for('product'))
+
+@app.route('/comments')
+def comments():
+    if 'iduser' in session:
+        #dbuser = User.query.get(session['iduser'])
+       # print(dbuser)
+        dbuser = db.session.get(User, session['iduser'])
+        username = dbuser.name
+    comments = Comment.query.order_by(Comment.created_at.desc()).all()
+    return render_template('comments.html', comments=comments, username=username)
+
+@app.route('/post_comment', methods=['POST'])
+def post_comment():
+    username = request.form.get('username')
+    product_name = request.form.get('product_name')
+    comment = request.form.get('comment')
+    if not username or not comment:
+        return redirect(url_for('comments'))
+    new_comment = Comment(username=username, product_name=product_name, comment=comment)
+    db.session.add(new_comment)
+    db.session.commit()
+    return redirect(url_for('comments'))
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)

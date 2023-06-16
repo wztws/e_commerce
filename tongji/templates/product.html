@@ -11,6 +11,71 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.min.js"></script>
     <script src="{{ url_for('static', filename='js/ajax.js') }}"></script>
     <script src="{{ url_for('static', filename='js/product.js') }}"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        #wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .comment {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        .comment-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .comment-body {
+            margin-top: 5px;
+        }
+        .comment-form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .comment-form label {
+            margin-bottom: 5px;
+        }
+        .comment-form input[type="text"] {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            margin-bottom: 10px;
+        }
+        .comment-form input[type="submit"] {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+        .comment-form input[type="submit"]:hover {
+            background-color: #0069d9;
+        }
+    </style>
 </head>
 
 
@@ -149,7 +214,62 @@
                         <div class="detail-message">
                             <a href="{{ url_for('message') }}" onclick="message()">私信商家</a></div>
                         <div class="detail-eval">
-                            <a href="javascript:void(0);" onclick="eval()">评价商品</a></div>
+                            <a href="javascript:void(0);" onclick="showCommentBox()">评价商品</a>
+                        </div>
+                        <script>
+                            function showCommentBox() {
+                                Swal.fire({
+                                    title: '请输入您的评论', // 弹窗标题
+                                    input: 'textarea', // 输入框类型为文本框
+                                    inputPlaceholder: '请输入您的评论', // 输入框的提示文本
+                                    inputAttributes: {
+                                        'aria-label': '请输入您的评论' // 输入框的ARIA标签
+                                    },
+                                    showCancelButton: true, // 显示取消按钮
+                                    confirmButtonText: '提交', // 确认按钮的文本
+                                    cancelButtonText: '取消', // 取消按钮的文本
+                                    showLoaderOnConfirm: true, // 点击确认按钮时显示加载动画
+                                    preConfirm: (comment) => { // 点击确认按钮时执行的函数
+                                        var product_name = "{{ product.name }}"; // 获取产品id
+                                        var data = {
+                                            product_name: product_name,
+                                            comment: comment
+                                        };
+                                        return fetch('/api/comment', { // 发送POST请求到后端
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify(data)
+                                        })
+                                        //.then(response => response.json()) // 解析响应的JSON数据
+                                        //.then(data => {
+                                        //    if (data.message === 'success') { // 如果评论成功
+                                        //        return data.comment; // 返回评论内容
+                                        //    } else { // 如果评论失败
+                                        //        throw new Error(data.message); // 抛出错误
+                                        //    }
+                                        //})
+                                        //.catch(error => {
+                                        //     Swal.showValidationMessage( // 显示验证错误信息
+                                        //         `评论失败: ${error}`
+                                        //     );
+                                        // });
+                                    },
+                                    allowOutsideClick: () => !Swal.isLoading() // 禁止在加载动画时点击外部区域
+                                })
+                                .then(result => {
+                                    if (result.isConfirmed) { // 如果点击了确认按钮
+                                        Swal.fire({ // 显示提交成功的提示框
+                                            icon: 'success',
+                                            title: '评论成功',
+                                            showConfirmButton: false,
+                                            timer: 1000
+                                        });
+                                    }
+                                });
+                            }
+                        </script>
                     </div>
                 </div>
             </div>
@@ -161,6 +281,20 @@
             </div>
             {% endfor %}
         </div>
+        
+    </div>
+</body>
+<body>
+    <div id="wrapper">
+        <h1>用户评论</h1>
+        <ul>
+            {% for comment in comments %}
+            <li class="comment">
+                <div class="comment-header">{{ comment.username }} 在{{ comment.created_at }}评论过 {{ comment.product_name }}</div>
+                <div class="comment-body">{{ comment.comment }}</div>
+            </li>
+            {% endfor %}
+        </ul>
     </div>
 </body>
 

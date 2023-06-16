@@ -28,6 +28,8 @@
             <span class="sep">|</span>
             <a href="{{ url_for('order') }}">我的订单</a>
             <span class="sep">|</span>
+            <a href="{{ url_for('comments') }}">帖子中心</a>
+            <span class="sep">|</span>
             <a href="https://www.swjtu.edu.cn">swjtu</a>
             <span class="sep">|</span>
             <a href="http://jwc.swjtu.edu.cn/index.html">swjtu教务</a>
@@ -50,6 +52,8 @@
             <a href="{{ url_for('center') }}">{{user.name}}</a>
             <span class="sep">|</span>
             <a href="{{ url_for('order') }}">我的订单</a>
+            <span class="sep">|</span>
+            <a href="{{ url_for('comments') }}">帖子中心</a>
             <span class="sep">|</span>
             <a href="javascript:void(0);" onclick="logout()">退出登录</a>
             {% if user.auth == 2 %}
@@ -497,6 +501,8 @@
                 <a href="{{ url_for('cart') }}">购物车</a>
                 <span class="sep">|</span>
                 <a href="{{ url_for('order') }}">我的订单</a>
+                <span class="sep">|</span>
+                <a href="{{ url_for('comments') }}">帖子中心</a>
                 <span class="sep">|</span>
                 <a href="https://www.swjtu.edu.cn">swjtu</a>
                 <span class="sep">|</span>

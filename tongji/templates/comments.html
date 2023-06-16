@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>帖子中心</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        #wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .comment {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        .comment-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .comment-body {
+            margin-top: 5px;
+        }
+        .comment-form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .comment-form label {
+            margin-bottom: 5px;
+        }
+        .comment-form input[type="text"] {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            margin-bottom: 10px;
+        }
+        .comment-form input[type="submit"] {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+        .comment-form input[type="submit"]:hover {
+            background-color: #0069d9;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrapper">
+        <h1>帖子中心</h1>
+        <ul>
+            {% for comment in comments %}
+            <li class="comment">
+                <div class="comment-header">{{ comment.username }} 在{{ comment.created_at }}评论过 {{ comment.product_name }}</div>
+                <div class="comment-body">{{ comment.comment }}</div>
+            </li>
+            {% endfor %}
+        </ul>
+        <form class="comment-form" method="post" action="/post_comment">
+            <label for="username">用户名：</label>
+            <input type="text" name="username" id="username" value="{{ username }}" readonly required>
+            <label for="comment">帖子内容：</label>
+            <textarea name="comment" id="comment" rows="5" required></textarea>
+            <input type="hidden" name="product_name" value="普通帖子">
+            <input type="submit" value="提交帖子">
+        </form>
+    </div>
+</body>
+</html>
