@@ -329,7 +329,6 @@ def define():
     #在表Order中搜索order_id对应的数据
     order = Order.query.filter(Order.idorder==order_id).first()
     #如果order.ifecho==0，且当前系统时间减去order.time大于24小时，将其该数据从Order中删除
-    print
 
     #如果order.ifecho==0,将其ifecho=1
     if order.ifecho==0:
