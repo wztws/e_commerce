@@ -214,3 +214,13 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2023-06-12 21:24:36
+
+CREATE TABLE IF NOT EXISTS `comments` (
+  `created_at` datetime NOT NULL,
+  `username` VARCHAR(255) NOT NULL,
+  `product_name` VARCHAR(255) NOT NULL,
+  `comment` TEXT NOT NULL,
+  PRIMARY KEY (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `comments` VALUES ('2023-05-16 14:30:50', 'ljq', '青花瓷', '这个青花瓷太酷了！');
