@@ -7,11 +7,19 @@ from flask import Flask, request, render_template, session, redirect, url_for, m
 from flask_sqlalchemy import SQLAlchemy
 import json
 from collections import defaultdict
+import argparse
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='MySQL Config')
+    parser.add_argument('--user', default='root', type=str, help='user')
+    parser.add_argument('--mm', default='123456', type=str, help='MySQL secret')
+    return parser.parse_args()
+args = parse_args()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '123456'  # 设置session加密的密钥
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=2)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:w522328z@localhost:3306/webhw'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://'+args.user+':'+ args.mm +'@localhost:3306/webhw'
 db = SQLAlchemy(app)
 class User(db.Model):
     __tablename__ = 'user'
@@ -719,6 +727,7 @@ def stats():
                 date_format_str = '%Y'
             else:
                 return jsonify({'error': 'Invalid unit'})
+            print(type(dbuser.iduser))
             
             # 查询满足条件的订单数据并进行统计
             result = db.session.query(
@@ -726,10 +735,10 @@ def stats():
                 func.sum(amount_field).label('total')
             ).filter(
                 and_(
-                    #filter_field == dbuser.iduser,
+                    #filter_field == db.text(str(dbuser.iduser)),  #bug
                     Order.ifecho != 0,
-                    #Order.time >= start_date,
-                    #Order.time < end_date
+                    Order.time >= start_date,
+                    Order.time < end_date
                 )
             ).group_by('date').all()
             print(result)

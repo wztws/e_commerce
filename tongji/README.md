@@ -21,3 +21,10 @@ pytest -v test.py
 ```cmd
 pytest -v test.py
 ```
+
+# 2023/6/16更新
+
++ 使用方法
+```cmd
+pytho app.py --mm {你的MySQL数据库密码}
+```
